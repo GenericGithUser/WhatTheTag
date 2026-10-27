@@ -1,0 +1,18 @@
+{
+  "name": "Inventory QR Scanner",
+  "short_name": "InvScanner",
+  "description": "Scan and manage your inventory items with QR codes",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#3880ff",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

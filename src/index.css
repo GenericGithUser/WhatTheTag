@@ -1,0 +1,78 @@
+@import "tailwindcss";
+
+/* Global styles */
+:root {
+  --ion-color-primary: #3880ff;
+  --ion-color-secondary: #3dc2ff;
+  --ion-color-tertiary: #5260ff;
+  --ion-color-success: #2dd36f;
+  --ion-color-warning: #ffc409;
+  --ion-color-danger: #eb445a;
+  --ion-color-dark: #222428;
+  --ion-color-medium: #92949c;
+  --ion-color-light: #f4f5f8;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* QR Scanner styles */
+#qr-reader {
+  border: none !important;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+#qr-reader video {
+  border-radius: 12px;
+}
+
+#qr-reader__scan_region {
+  min-height: 250px;
+}
+
+#qr-reader__dashboard {
+  display: none !important;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 4px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 2px;
+}
+
+/* Ionic overrides for better Tailwind integration */
+ion-card {
+  border-radius: 12px !important;
+}
+
+ion-segment {
+  --background: #f1f5f9;
+}
+
+ion-segment-button {
+  --indicator-color: #3880ff;
+  --color-checked: #3880ff;
+}
+
+ion-searchbar {
+  --border-radius: 12px;
+  --background: #f1f5f9;
+}
+
+ion-badge {
+  border-radius: 6px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+}
