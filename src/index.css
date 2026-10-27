@@ -1,22 +1,123 @@
 @import "tailwindcss";
 
-/* Global styles */
+/* Gruvbox Light Theme Variables */
 :root {
-  --ion-color-primary: #3880ff;
-  --ion-color-secondary: #3dc2ff;
-  --ion-color-tertiary: #5260ff;
-  --ion-color-success: #2dd36f;
-  --ion-color-warning: #ffc409;
-  --ion-color-danger: #eb445a;
-  --ion-color-dark: #222428;
-  --ion-color-medium: #92949c;
-  --ion-color-light: #f4f5f8;
+  /* Gruvbox Backgrounds */
+  --gruvbox-bg: #fbf1c7;
+  --gruvbox-bg1: #ebdbb2;
+  --gruvbox-bg2: #d5c4a1;
+  --gruvbox-bg3: #bdae93;
+  --gruvbox-bg4: #a89984;
+
+  /* Gruvbox Foregrounds */
+  --gruvbox-fg0: #282828;
+  --gruvbox-fg1: #3c3836;
+  --gruvbox-fg2: #504945;
+  --gruvbox-fg3: #665c54;
+  --gruvbox-fg4: #7c6f64;
+
+  /* Gruvbox Colors */
+  --gruvbox-green: #98971a;
+  --gruvbox-yellow: #d79921;
+  --gruvbox-blue: #458588;
+  --gruvbox-red: #cc241d;
+  --gruvbox-orange: #d65d0e;
+  --gruvbox-aqua: #689d6a;
+
+  /* Ionic Color Overrides */
+  --ion-color-primary: #458588;
+  --ion-color-primary-rgb: 69, 133, 136;
+  --ion-color-primary-contrast: #fbf1c7;
+  --ion-color-primary-contrast-rgb: 251, 241, 199;
+  --ion-color-primary-shade: #3d7578;
+  --ion-color-primary-tint: #579093;
+
+  --ion-color-secondary: #d65d0e;
+  --ion-color-secondary-rgb: 214, 93, 14;
+  --ion-color-secondary-contrast: #fbf1c7;
+  --ion-color-secondary-contrast-rgb: 251, 241, 199;
+  --ion-color-secondary-shade: #bc520c;
+  --ion-color-secondary-tint: #da6d26;
+
+  --ion-color-tertiary: #689d6a;
+  --ion-color-tertiary-rgb: 104, 157, 106;
+  --ion-color-tertiary-contrast: #fbf1c7;
+  --ion-color-tertiary-contrast-rgb: 251, 241, 199;
+  --ion-color-tertiary-shade: #5c8a5d;
+  --ion-color-tertiary-tint: #77a779;
+
+  --ion-color-success: #98971a;
+  --ion-color-success-rgb: 152, 151, 26;
+  --ion-color-success-contrast: #fbf1c7;
+  --ion-color-success-contrast-rgb: 251, 241, 199;
+  --ion-color-success-shade: #868517;
+  --ion-color-success-tint: #a2a131;
+
+  --ion-color-warning: #d79921;
+  --ion-color-warning-rgb: 215, 153, 33;
+  --ion-color-warning-contrast: #282828;
+  --ion-color-warning-contrast-rgb: 40, 40, 40;
+  --ion-color-warning-shade: #bd871d;
+  --ion-color-warning-tint: #dba337;
+
+  --ion-color-danger: #cc241d;
+  --ion-color-danger-rgb: 204, 36, 29;
+  --ion-color-danger-contrast: #fbf1c7;
+  --ion-color-danger-contrast-rgb: 251, 241, 199;
+  --ion-color-danger-shade: #b3201a;
+  --ion-color-danger-tint: #d13a34;
+
+  --ion-color-dark: #282828;
+  --ion-color-dark-rgb: 40, 40, 40;
+  --ion-color-dark-contrast: #fbf1c7;
+  --ion-color-dark-contrast-rgb: 251, 241, 199;
+  --ion-color-dark-shade: #232323;
+  --ion-color-dark-tint: #3e3e3e;
+
+  --ion-color-medium: #7c6f64;
+  --ion-color-medium-rgb: 124, 111, 100;
+  --ion-color-medium-contrast: #fbf1c7;
+  --ion-color-medium-contrast-rgb: 251, 241, 199;
+  --ion-color-medium-shade: #6d6258;
+  --ion-color-medium-tint: #897d73;
+
+  --ion-color-light: #ebdbb2;
+  --ion-color-light-rgb: 235, 219, 178;
+  --ion-color-light-contrast: #282828;
+  --ion-color-light-contrast-rgb: 40, 40, 40;
+  --ion-color-light-shade: #cfc09c;
+  --ion-color-light-tint: #ecdfbf;
+
+  /* Ionic Background & Surface */
+  --ion-background-color: #fbf1c7;
+  --ion-background-color-rgb: 251, 241, 199;
+  --ion-text-color: #282828;
+  --ion-text-color-rgb: 40, 40, 40;
+
+  --ion-toolbar-background: #ebdbb2;
+  --ion-toolbar-color: #282828;
+  --ion-toolbar-border-color: #d5c4a1;
+
+  --ion-card-background: #ebdbb2;
+  --ion-card-border-color: #d5c4a1;
+
+  --ion-item-background: #fbf1c7;
+  --ion-item-border-color: #d5c4a1;
+
+  --ion-tab-bar-background: #ebdbb2;
+  --ion-tab-bar-color: #665c54;
+  --ion-tab-bar-border-color: #d5c4a1;
+
+  --ion-tab-button-color-focused: #458588;
 }
 
+/* Global styles */
 body {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  background-color: #fbf1c7 !important;
+  color: #282828;
 }
 
 /* QR Scanner styles */
@@ -24,6 +125,7 @@ body {
   border: none !important;
   border-radius: 12px;
   overflow: hidden;
+  background: #ebdbb2;
 }
 
 #qr-reader video {
@@ -44,31 +146,49 @@ body {
 }
 
 ::-webkit-scrollbar-track {
-  background: transparent;
+  background: #fbf1c7;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #cbd5e1;
+  background: #bdae93;
   border-radius: 2px;
 }
 
-/* Ionic overrides for better Tailwind integration */
+/* Ionic overrides for Gruvbox theme */
 ion-card {
   border-radius: 12px !important;
+  --background: #ebdbb2;
+  box-shadow: 0 1px 3px rgba(40, 40, 40, 0.08);
 }
 
 ion-segment {
-  --background: #f1f5f9;
+  --background: #d5c4a1;
+  border-radius: 10px;
 }
 
 ion-segment-button {
-  --indicator-color: #3880ff;
-  --color-checked: #3880ff;
+  --indicator-color: #458588;
+  --color: #665c54;
+  --color-checked: #fbf1c7;
+  --indicator-box-shadow: none;
+  border-radius: 8px;
+  min-height: 36px;
+  font-size: 13px;
+}
+
+ion-segment-button.segment-button-checked {
+  --color: #fbf1c7;
+  color: #fbf1c7 !important;
+  background: #458588;
+  border-radius: 8px;
 }
 
 ion-searchbar {
   --border-radius: 12px;
-  --background: #f1f5f9;
+  --background: #ebdbb2;
+  --color: #282828;
+  --placeholder-color: #7c6f64;
+  --icon-color: #7c6f64;
 }
 
 ion-badge {
@@ -76,3 +196,69 @@ ion-badge {
   font-weight: 600;
   letter-spacing: 0.5px;
 }
+
+ion-toolbar {
+  --background: #ebdbb2;
+  --color: #282828;
+  --border-color: #d5c4a1;
+}
+
+ion-header::after {
+  background: #d5c4a1 !important;
+}
+
+ion-content {
+  --background: #fbf1c7;
+  --color: #282828;
+}
+
+ion-item {
+  --background: transparent;
+  --color: #282828;
+  --border-color: #d5c4a1;
+  --inner-border-color: #d5c4a1;
+}
+
+ion-chip {
+  --background: #d5c4a1;
+  --color: #3c3836;
+}
+
+ion-button {
+  --border-radius: 10px;
+  --box-shadow: none;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+}
+
+ion-back-button {
+  --color: #282828;
+  --icon-color: #282828;
+}
+
+ion-title {
+  color: #282828;
+  font-weight: 700;
+}
+
+ion-alert {
+  --background: #ebdbb2;
+}
+
+/* Gruvbox utility classes */
+.gruvbox-bg { background-color: #fbf1c7; }
+.gruvbox-bg1 { background-color: #ebdbb2; }
+.gruvbox-bg2 { background-color: #d5c4a1; }
+.gruvbox-bg3 { background-color: #bdae93; }
+
+.gruvbox-fg { color: #282828; }
+.gruvbox-fg2 { color: #504945; }
+.gruvbox-fg3 { color: #665c54; }
+.gruvbox-fg4 { color: #7c6f64; }
+
+.gruvbox-green { color: #98971a; }
+.gruvbox-yellow { color: #d79921; }
+.gruvbox-blue { color: #458588; }
+.gruvbox-red { color: #cc241d; }
+.gruvbox-orange { color: #d65d0e; }
+.gruvbox-aqua { color: #689d6a; }
