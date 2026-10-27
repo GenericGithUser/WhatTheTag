@@ -6,8 +6,6 @@ import {
   IonTitle,
   IonContent,
   IonCard,
-  IonCardHeader,
-  IonCardTitle,
   IonCardContent,
   IonBadge,
   IonSearchbar,
@@ -84,60 +82,59 @@ const Dashboard: React.FC = () => {
   return (
     <IonPage>
       <IonHeader>
-        <IonToolbar color="primary">
-          <IonTitle>Inventory Dashboard</IonTitle>
+        <IonToolbar>
+          <IonTitle style={{ color: '#282828' }}>Inventory Dashboard</IonTitle>
           <IonIcon
             icon={scanOutline}
             slot="end"
-            className="cursor-pointer mr-4 text-2xl"
             onClick={() => navigate('/scanner')}
-            style={{ fontSize: '24px', cursor: 'pointer' }}
+            style={{ fontSize: '24px', cursor: 'pointer', color: '#458588', marginRight: '16px' }}
           />
         </IonToolbar>
       </IonHeader>
       <IonContent className="ion-padding">
         {/* Stats Cards */}
         <div className="grid grid-cols-2 gap-3 mb-4">
-          <IonCard className="!m-0 !bg-blue-50 !border-l-4 !border-blue-500">
+          <IonCard className="!m-0" style={{ borderLeft: '4px solid #458588', background: '#ebdbb2' }}>
             <IonCardContent className="!p-3">
               <div className="flex items-center gap-2">
-                <IonIcon icon={cubeOutline} color="primary" style={{ fontSize: '24px' }} />
+                <IonIcon icon={cubeOutline} style={{ fontSize: '24px', color: '#458588' }} />
                 <div>
-                  <p className="text-2xl font-bold text-blue-700">{counts.total}</p>
-                  <p className="text-xs text-gray-600">Total Items</p>
+                  <p className="text-2xl font-bold" style={{ color: '#458588' }}>{counts.total}</p>
+                  <p className="text-xs" style={{ color: '#665c54' }}>Total Items</p>
                 </div>
               </div>
             </IonCardContent>
           </IonCard>
-          <IonCard className="!m-0 !bg-green-50 !border-l-4 !border-green-500">
+          <IonCard className="!m-0" style={{ borderLeft: '4px solid #98971a', background: '#ebdbb2' }}>
             <IonCardContent className="!p-3">
               <div className="flex items-center gap-2">
-                <IonIcon icon="checkmark-circle" color="success" style={{ fontSize: '24px' }} />
+                <IonIcon icon="checkmark-circle" style={{ fontSize: '24px', color: '#98971a' }} />
                 <div>
-                  <p className="text-2xl font-bold text-green-700">{counts.available}</p>
-                  <p className="text-xs text-gray-600">Available</p>
+                  <p className="text-2xl font-bold" style={{ color: '#98971a' }}>{counts.available}</p>
+                  <p className="text-xs" style={{ color: '#665c54' }}>Available</p>
                 </div>
               </div>
             </IonCardContent>
           </IonCard>
-          <IonCard className="!m-0 !bg-indigo-50 !border-l-4 !border-indigo-500">
+          <IonCard className="!m-0" style={{ borderLeft: '4px solid #d65d0e', background: '#ebdbb2' }}>
             <IonCardContent className="!p-3">
               <div className="flex items-center gap-2">
-                <IonIcon icon={peopleOutline} color="primary" style={{ fontSize: '24px' }} />
+                <IonIcon icon={peopleOutline} style={{ fontSize: '24px', color: '#d65d0e' }} />
                 <div>
-                  <p className="text-2xl font-bold text-indigo-700">{counts['in-use']}</p>
-                  <p className="text-xs text-gray-600">In Use</p>
+                  <p className="text-2xl font-bold" style={{ color: '#d65d0e' }}>{counts['in-use']}</p>
+                  <p className="text-xs" style={{ color: '#665c54' }}>In Use</p>
                 </div>
               </div>
             </IonCardContent>
           </IonCard>
-          <IonCard className="!m-0 !bg-amber-50 !border-l-4 !border-amber-500">
+          <IonCard className="!m-0" style={{ borderLeft: '4px solid #cc241d', background: '#ebdbb2' }}>
             <IonCardContent className="!p-3">
               <div className="flex items-center gap-2">
-                <IonIcon icon={alertCircleOutline} color="warning" style={{ fontSize: '24px' }} />
+                <IonIcon icon={alertCircleOutline} style={{ fontSize: '24px', color: '#cc241d' }} />
                 <div>
-                  <p className="text-2xl font-bold text-amber-700">{counts.maintenance}</p>
-                  <p className="text-xs text-gray-600">Maintenance</p>
+                  <p className="text-2xl font-bold" style={{ color: '#cc241d' }}>{counts.maintenance}</p>
+                  <p className="text-xs" style={{ color: '#665c54' }}>Maintenance</p>
                 </div>
               </div>
             </IonCardContent>
@@ -180,11 +177,11 @@ const Dashboard: React.FC = () => {
         {/* Items List */}
         {loading ? (
           <div className="flex justify-center py-8">
-            <IonSpinner name="crescent" />
+            <IonSpinner name="crescent" style={{ color: '#458588' }} />
           </div>
         ) : filteredItems.length === 0 ? (
-          <div className="text-center py-8 text-gray-500">
-            <IonIcon icon={cubeOutline} style={{ fontSize: '48px' }} className="mb-2 opacity-50" />
+          <div className="text-center py-8" style={{ color: '#7c6f64' }}>
+            <IonIcon icon={cubeOutline} style={{ fontSize: '48px', color: '#bdae93' }} className="mb-2" />
             <p>No items found</p>
           </div>
         ) : (
@@ -192,8 +189,9 @@ const Dashboard: React.FC = () => {
             {filteredItems.map((item) => (
               <IonCard
                 key={item.id}
-                className="!m-0 cursor-pointer hover:shadow-lg transition-shadow"
+                className="!m-0 cursor-pointer transition-shadow hover:shadow-md"
                 onClick={() => navigate(`/item/${item.id}`)}
+                style={{ background: '#ebdbb2' }}
               >
                 <IonItem lines="none" className="!--padding-start-0">
                   <IonAvatar slot="start" className="!w-16 !h-16 !rounded-lg overflow-hidden mr-3">
@@ -202,18 +200,18 @@ const Dashboard: React.FC = () => {
                       alt={item.name}
                       className="w-full h-full object-cover"
                       onError={(e) => {
-                        (e.target as HTMLImageElement).src = 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect fill="%23e2e8f0" width="100" height="100"/><text x="50" y="55" text-anchor="middle" fill="%2394a3b8" font-size="12">No Image</text></svg>';
+                        (e.target as HTMLImageElement).src = 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect fill="%23d5c4a1" width="100" height="100"/><text x="50" y="55" text-anchor="middle" fill="%237c6f64" font-size="12">No Image</text></svg>';
                       }}
                     />
                   </IonAvatar>
                   <div className="flex-1">
-                    <h3 className="font-semibold text-sm mb-1">{item.name}</h3>
-                    <p className="text-xs text-gray-500 mb-1">{item.ownerName}</p>
+                    <h3 className="font-semibold text-sm mb-1" style={{ color: '#282828' }}>{item.name}</h3>
+                    <p className="text-xs mb-1" style={{ color: '#665c54' }}>{item.ownerName}</p>
                     <div className="flex items-center gap-2">
                       <IonBadge color={getStatusColor(item.status)} className="text-xs">
                         {item.status.replace('-', ' ').toUpperCase()}
                       </IonBadge>
-                      <IonChip className="!m-0 !h-6 text-xs">
+                      <IonChip className="!m-0 !h-6 text-xs" style={{ background: '#d5c4a1', color: '#3c3836' } as any}>
                         <IonLabel>{item.category}</IonLabel>
                       </IonChip>
                     </div>
@@ -226,10 +224,11 @@ const Dashboard: React.FC = () => {
 
         {/* Scan FAB */}
         <div
-          className="fixed bottom-6 right-6 w-14 h-14 bg-blue-600 rounded-full flex items-center justify-center shadow-lg cursor-pointer hover:bg-blue-700 transition-colors z-50"
+          className="fixed bottom-6 right-6 w-14 h-14 rounded-full flex items-center justify-center shadow-lg cursor-pointer transition-colors z-50"
+          style={{ backgroundColor: '#d65d0e' }}
           onClick={() => navigate('/scanner')}
         >
-          <IonIcon icon={scanOutline} style={{ fontSize: '28px', color: 'white' }} />
+          <IonIcon icon={scanOutline} style={{ fontSize: '28px', color: '#fbf1c7' }} />
         </div>
       </IonContent>
     </IonPage>

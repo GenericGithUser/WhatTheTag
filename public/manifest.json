@@ -4,8 +4,8 @@
   "description": "Scan and manage your inventory items with QR codes",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#ffffff",
-  "theme_color": "#3880ff",
+  "background_color": "#fbf1c7",
+  "theme_color": "#ebdbb2",
   "orientation": "portrait",
   "icons": [
     {
