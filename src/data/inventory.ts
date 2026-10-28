@@ -1,231 +1,301 @@
-import { InventoryItem } from '../types';
+import { InventoryItem, Category, Status } from '../types';
+import { 
+  getInventoryItems as fetchFromFirestore,
+  getInventoryItemById as fetchByIdFromFirestore,
+  getInventoryItemByAssetNumber as fetchByAssetNumberFromFirestore
+} from '../firebase/config';
 
-const inventoryData: InventoryItem[] = [
+// Check if Firebase is properly configured
+const isFirebaseConfigured = (): boolean => {
+  return !!(
+    import.meta.env.VITE_FIREBASE_API_KEY &&
+    import.meta.env.VITE_FIREBASE_API_KEY !== 'your-api-key-here'
+  );
+};
+
+// Fallback demo data for when Firebase is not configured
+const demoData: InventoryItem[] = [
   {
-    id: '1',
-    qrCode: 'INV-001-LAPTOP',
-    name: 'MacBook Pro 16"',
-    image: 'https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=400&h=300&fit=crop',
-    ownerName: 'John Smith',
-    status: 'in-use',
+    id: 'demo-1',
+    assetNumber: 'AST-001',
+    itemName: 'Dell OptiPlex 7090',
+    itemDescription: 'Desktop computer with Intel i7, 16GB RAM, 512GB SSD. Assigned to finance department for accounting tasks.',
     category: 'Electronics',
-    location: 'Office - Floor 3, Desk 12',
-    lastUpdated: '2024-12-15',
-    description: 'Apple MacBook Pro 16-inch, M3 Max chip, 36GB RAM, 1TB SSD. Assigned to senior development team.',
-    serialNumber: 'SN-MBP-2024-001',
-    purchaseDate: '2024-01-15',
+    status: 'Good',
+    designatedOwner: 'John Smith',
+    image: 'https://images.unsplash.com/photo-1593640408182-31c70c8268f5?w=400&h=300&fit=crop',
+    createdAt: '2024-01-15T10:00:00Z',
+    updatedAt: '2024-12-15T14:30:00Z',
   },
   {
-    id: '2',
-    qrCode: 'INV-002-MONITOR',
-    name: 'Dell UltraSharp 32"',
-    image: 'https://images.unsplash.com/photo-1527443224154-c4a3942d3acf?w=400&h=300&fit=crop',
-    ownerName: 'Sarah Johnson',
-    status: 'available',
-    category: 'Electronics',
-    location: 'Storage Room B',
-    lastUpdated: '2024-12-10',
-    description: 'Dell UltraSharp 32" 4K USB-C Hub Monitor. Previously used by design team, now available for reassignment.',
-    serialNumber: 'SN-DEL-2024-002',
-    purchaseDate: '2023-06-20',
-  },
-  {
-    id: '3',
-    qrCode: 'INV-003-CHAIR',
-    name: 'Herman Miller Aeron',
+    id: 'demo-2',
+    assetNumber: 'AST-002',
+    itemName: 'Herman Miller Aeron Chair',
+    itemDescription: 'Ergonomic office chair, size B, fully adjustable. Used in executive office.',
+    category: 'Fixed',
+    status: 'Good',
+    designatedOwner: 'Sarah Johnson',
     image: 'https://images.unsplash.com/photo-1589364231943-fcd8cef0e97a?w=400&h=300&fit=crop',
-    ownerName: 'Mike Chen',
-    status: 'in-use',
-    category: 'Furniture',
-    location: 'Office - Floor 2, Desk 5',
-    lastUpdated: '2024-11-28',
-    description: 'Herman Miller Aeron Chair, Size B, fully loaded with all adjustments. Ergonomic office seating.',
-    serialNumber: 'SN-HM-2023-003',
-    purchaseDate: '2023-03-10',
+    createdAt: '2023-06-20T09:00:00Z',
+    updatedAt: '2024-12-10T11:15:00Z',
   },
   {
-    id: '4',
-    qrCode: 'INV-004-PRINTER',
-    name: 'HP LaserJet Pro M404',
-    image: 'https://images.unsplash.com/photo-1612815154858-60aa4c59eaa6?w=400&h=300&fit=crop',
-    ownerName: 'IT Department',
-    status: 'maintenance',
-    category: 'Equipment',
-    location: 'Office - Floor 1, Print Station',
-    lastUpdated: '2024-12-01',
-    description: 'HP LaserJet Pro M404dn monochrome laser printer. Currently under maintenance for toner replacement and paper jam fix.',
-    serialNumber: 'SN-HP-2022-004',
-    purchaseDate: '2022-09-05',
-  },
-  {
-    id: '5',
-    qrCode: 'INV-005-TABLET',
-    name: 'iPad Pro 12.9"',
-    image: 'https://images.unsplash.com/photo-1544244015-0df4b3ffc6b0?w=400&h=300&fit=crop',
-    ownerName: 'Emily Davis',
-    status: 'in-use',
+    id: 'demo-3',
+    assetNumber: 'AST-003',
+    itemName: 'MacBook Pro 16"',
+    itemDescription: 'Apple MacBook Pro with M3 chip, 32GB RAM, 1TB SSD. Development laptop for engineering team.',
     category: 'Electronics',
-    location: 'Conference Room A',
-    lastUpdated: '2024-12-12',
-    description: 'Apple iPad Pro 12.9-inch, M2 chip, 256GB, Wi-Fi + Cellular. Used for presentations and client meetings.',
-    serialNumber: 'SN-IPD-2024-005',
-    purchaseDate: '2024-02-28',
+    status: 'Good',
+    designatedOwner: 'Mike Chen',
+    image: 'https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=400&h=300&fit=crop',
+    createdAt: '2024-02-01T08:00:00Z',
+    updatedAt: '2024-12-12T16:45:00Z',
   },
   {
-    id: '6',
-    qrCode: 'INV-006-DESK',
-    name: 'Standing Desk - Uplift V2',
+    id: 'demo-4',
+    assetNumber: 'AST-004',
+    itemName: 'HP LaserJet Pro M404',
+    itemDescription: 'Monochrome laser printer for office use. Currently experiencing paper feed issues.',
+    category: 'Electronics',
+    status: 'Has Defects',
+    designatedOwner: 'IT Department',
+    image: 'https://images.unsplash.com/photo-1612815154858-60aa4c59eaa6?w=400&h=300&fit=crop',
+    createdAt: '2022-09-05T13:00:00Z',
+    updatedAt: '2024-12-01T09:20:00Z',
+  },
+  {
+    id: 'demo-5',
+    assetNumber: 'AST-005',
+    itemName: 'Standing Desk - Uplift V2',
+    itemDescription: 'Electric height-adjustable desk with bamboo top. Motor malfunction, stuck at standing height.',
+    category: 'Fixed',
+    status: 'Has Defects',
+    designatedOwner: 'Alex Turner',
     image: 'https://images.unsplash.com/photo-1518455027359-f3f8164ba6bd?w=400&h=300&fit=crop',
-    ownerName: 'Alex Turner',
-    status: 'available',
-    category: 'Furniture',
-    location: 'Storage Room A',
-    lastUpdated: '2024-12-08',
-    description: 'Uplift V2 Commercial Standing Desk, 60"x30", bamboo top with programmable memory keypad.',
-    serialNumber: 'SN-UP-2023-006',
-    purchaseDate: '2023-11-15',
+    createdAt: '2023-11-15T10:30:00Z',
+    updatedAt: '2024-12-08T15:00:00Z',
   },
   {
-    id: '7',
-    qrCode: 'INV-007-PROJECTOR',
-    name: 'Epson PowerLite 4K',
-    image: 'https://images.unsplash.com/photo-1626379953822-baec19c3accd?w=400&h=300&fit=crop',
-    ownerName: 'AV Department',
-    status: 'available',
-    category: 'Equipment',
-    location: 'AV Storage',
-    lastUpdated: '2024-12-05',
-    description: 'Epson PowerLite 4K Pro laser projector, 5000 lumens. Available for booking for events and presentations.',
-    serialNumber: 'SN-EP-2023-007',
-    purchaseDate: '2023-08-22',
+    id: 'demo-6',
+    assetNumber: 'AST-006',
+    itemName: 'Conference Table - 12 Seater',
+    itemDescription: 'Large wooden conference table for meeting room A. Severe water damage from ceiling leak.',
+    category: 'Fixed',
+    status: 'BAD',
+    designatedOwner: 'Facilities',
+    image: 'https://images.unsplash.com/photo-1519219788971-8d9797e0928e?w=400&h=300&fit=crop',
+    createdAt: '2020-03-10T11:00:00Z',
+    updatedAt: '2024-11-20T08:45:00Z',
   },
   {
-    id: '8',
-    qrCode: 'INV-008-KEYBOARD',
-    name: 'Logitech MX Keys',
-    image: 'https://images.unsplash.com/photo-1587829741301-dc798b83add3?w=400&h=300&fit=crop',
-    ownerName: 'Lisa Wong',
-    status: 'retired',
-    category: 'Accessories',
-    location: 'Disposal Queue',
-    lastUpdated: '2024-11-20',
-    description: 'Logitech MX Keys wireless keyboard. Retired due to key malfunction. Scheduled for replacement.',
-    serialNumber: 'SN-LG-2021-008',
-    purchaseDate: '2021-04-12',
+    id: 'demo-7',
+    assetNumber: 'AST-007',
+    itemName: 'Sony 65" 4K TV',
+    itemDescription: 'Display screen for presentation room. Screen has dead pixels and backlight bleeding.',
+    category: 'Electronics',
+    status: 'BAD',
+    designatedOwner: 'AV Department',
+    image: 'https://images.unsplash.com/photo-1593359677879-a4bb92f829d1?w=400&h=300&fit=crop',
+    createdAt: '2021-07-22T14:00:00Z',
+    updatedAt: '2024-11-28T10:30:00Z',
   },
   {
-    id: '9',
-    qrCode: 'INV-009-CAMERA',
-    name: 'Sony A7 IV',
-    image: 'https://images.unsplash.com/photo-1516035069371-29a1b244cc32?w=400&h=300&fit=crop',
-    ownerName: 'Marketing Team',
-    status: 'in-use',
-    category: 'Equipment',
-    location: 'Photo Studio',
-    lastUpdated: '2024-12-14',
-    description: 'Sony Alpha A7 IV mirrorless camera with 28-70mm kit lens. Used for product photography and marketing content.',
-    serialNumber: 'SN-SNY-2024-009',
-    purchaseDate: '2024-03-01',
+    id: 'demo-8',
+    assetNumber: 'AST-008',
+    itemName: 'iPad Pro 12.9"',
+    itemDescription: 'Apple iPad Pro for client presentations and field work. M2 chip, 256GB.',
+    category: 'Electronics',
+    status: 'Good',
+    designatedOwner: 'Emily Davis',
+    image: 'https://images.unsplash.com/photo-1544244015-0df4b3ffc6b0?w=400&h=300&fit=crop',
+    createdAt: '2024-03-01T09:00:00Z',
+    updatedAt: '2024-12-14T13:20:00Z',
   },
   {
-    id: '10',
-    qrCode: 'INV-010-SERVER',
-    name: 'Dell PowerEdge R750',
+    id: 'demo-9',
+    assetNumber: 'AST-009',
+    itemName: 'Office Partition System',
+    itemDescription: 'Modular office partition panels for workspace separation. Minor scratches on surface.',
+    category: 'Fixed',
+    status: 'Has Defects',
+    designatedOwner: 'Facilities',
+    image: 'https://images.unsplash.com/photo-1497366216548-37526070297c?w=400&h=300&fit=crop',
+    createdAt: '2022-05-18T16:00:00Z',
+    updatedAt: '2024-12-05T11:10:00Z',
+  },
+  {
+    id: 'demo-10',
+    assetNumber: 'AST-010',
+    itemName: 'Network Switch - Cisco 48-Port',
+    itemDescription: 'Managed network switch for server room. Fully operational, recently firmware updated.',
+    category: 'Electronics',
+    status: 'Good',
+    designatedOwner: 'IT Infrastructure',
     image: 'https://images.unsplash.com/photo-1558494949-ef010cbdcc31?w=400&h=300&fit=crop',
-    ownerName: 'IT Infrastructure',
-    status: 'in-use',
-    category: 'Infrastructure',
-    location: 'Server Room - Rack 3',
-    lastUpdated: '2024-12-13',
-    description: 'Dell PowerEdge R750 rack server, dual Xeon Gold, 256GB RAM, 4x 1TB NVMe. Hosts production databases.',
-    serialNumber: 'SN-DE-2023-010',
-    purchaseDate: '2023-05-18',
+    createdAt: '2023-08-12T07:30:00Z',
+    updatedAt: '2024-12-13T17:00:00Z',
   },
   {
-    id: '11',
-    qrCode: 'INV-011-HEADSET',
-    name: 'Sony WH-1000XM5',
-    image: 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=400&h=300&fit=crop',
-    ownerName: 'David Park',
-    status: 'available',
-    category: 'Accessories',
-    location: 'IT Closet - Floor 2',
-    lastUpdated: '2024-12-11',
-    description: 'Sony WH-1000XM5 wireless noise-canceling headphones. Available for checkout by employees.',
-    serialNumber: 'SN-SNY-2024-011',
-    purchaseDate: '2024-04-10',
+    id: 'demo-11',
+    assetNumber: 'AST-011',
+    itemName: 'Filing Cabinet - 4 Drawer',
+    itemDescription: 'Metal filing cabinet for document storage. Lock mechanism broken on top drawer.',
+    category: 'Fixed',
+    status: 'Has Defects',
+    designatedOwner: 'Admin Office',
+    image: 'https://images.unsplash.com/photo-1544816155-12df9643f363?w=400&h=300&fit=crop',
+    createdAt: '2019-11-30T12:00:00Z',
+    updatedAt: '2024-12-09T14:15:00Z',
   },
   {
-    id: '12',
-    qrCode: 'INV-012-WHITEBOARD',
-    name: 'Smart Board 75"',
-    image: 'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=400&h=300&fit=crop',
-    ownerName: 'Training Room',
-    status: 'in-use',
-    category: 'Equipment',
-    location: 'Training Room - Floor 1',
-    lastUpdated: '2024-12-09',
-    description: 'Smart Board MX75 interactive display, 75-inch 4K touchscreen. Used for training sessions and team meetings.',
-    serialNumber: 'SN-SB-2023-012',
-    purchaseDate: '2023-07-30',
+    id: 'demo-12',
+    assetNumber: 'AST-012',
+    itemName: 'Dell PowerEdge R750 Server',
+    itemDescription: 'Rack server hosting production databases. Dual Xeon Gold, 256GB RAM, 4x 1TB NVMe.',
+    category: 'Electronics',
+    status: 'Good',
+    designatedOwner: 'IT Infrastructure',
+    image: 'https://images.unsplash.com/photo-1558494949-ef010cbdcc31?w=400&h=300&fit=crop',
+    createdAt: '2023-05-18T08:00:00Z',
+    updatedAt: '2024-12-13T16:30:00Z',
   },
 ];
 
-// Simulated database service
-export const getInventoryItems = (): Promise<InventoryItem[]> => {
+/**
+ * Get all inventory items
+ * Uses Firestore if configured, otherwise returns demo data
+ */
+export const getInventoryItems = async (): Promise<InventoryItem[]> => {
+  if (isFirebaseConfigured()) {
+    try {
+      return await fetchFromFirestore();
+    } catch (error) {
+      console.error('Firestore fetch failed, falling back to demo data:', error);
+      return demoData;
+    }
+  }
+  // Simulate network delay for demo
   return new Promise((resolve) => {
-    setTimeout(() => {
-      resolve(inventoryData);
-    }, 500);
+    setTimeout(() => resolve(demoData), 500);
   });
 };
 
-export const getInventoryItemByQR = (qrCode: string): Promise<InventoryItem | null> => {
+/**
+ * Get a single inventory item by ID
+ */
+export const getInventoryItemById = async (id: string): Promise<InventoryItem | null> => {
+  if (isFirebaseConfigured()) {
+    try {
+      return await fetchByIdFromFirestore(id);
+    } catch (error) {
+      console.error('Firestore fetch failed, falling back to demo data:', error);
+      return demoData.find((item) => item.id === id) || null;
+    }
+  }
   return new Promise((resolve) => {
     setTimeout(() => {
-      const item = inventoryData.find(
-        (i) => i.qrCode.toLowerCase() === qrCode.toLowerCase()
-      );
-      resolve(item || null);
-    }, 300);
-  });
-};
-
-export const getInventoryItemById = (id: string): Promise<InventoryItem | null> => {
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      const item = inventoryData.find((i) => i.id === id);
-      resolve(item || null);
+      resolve(demoData.find((item) => item.id === id) || null);
     }, 200);
   });
 };
 
-export const getStatusColor = (status: InventoryItem['status']): string => {
+/**
+ * Get inventory item by asset number (for QR scanning)
+ */
+export const getInventoryItemByAssetNumber = async (assetNumber: string): Promise<InventoryItem | null> => {
+  if (isFirebaseConfigured()) {
+    try {
+      return await fetchByAssetNumberFromFirestore(assetNumber);
+    } catch (error) {
+      console.error('Firestore fetch failed, falling back to demo data:', error);
+      return demoData.find(
+        (item) => item.assetNumber.toLowerCase() === assetNumber.toLowerCase()
+      ) || null;
+    }
+  }
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve(
+        demoData.find(
+          (item) => item.assetNumber.toLowerCase() === assetNumber.toLowerCase()
+        ) || null
+      );
+    }, 300);
+  });
+};
+
+/**
+ * Get the Gruvbox color for a status
+ */
+export const getStatusColor = (status: Status): string => {
   switch (status) {
-    case 'available':
-      return 'success';
-    case 'in-use':
-      return 'primary';
-    case 'maintenance':
-      return 'warning';
-    case 'retired':
-      return 'danger';
+    case 'Good':
+      return 'success'; // Green #98971a
+    case 'Has Defects':
+      return 'warning'; // Yellow #d79921
+    case 'BAD':
+      return 'danger'; // Red #cc241d
     default:
       return 'medium';
   }
 };
 
-export const getStatusIcon = (status: InventoryItem['status']): string => {
+/**
+ * Get the Gruvbox hex color for a status
+ */
+export const getStatusHexColor = (status: Status): string => {
   switch (status) {
-    case 'available':
+    case 'Good':
+      return '#98971a'; // Green
+    case 'Has Defects':
+      return '#d79921'; // Yellow
+    case 'BAD':
+      return '#cc241d'; // Red
+    default:
+      return '#7c6f64'; // Medium
+  }
+};
+
+/**
+ * Get the icon name for a status
+ */
+export const getStatusIcon = (status: Status): string => {
+  switch (status) {
+    case 'Good':
       return 'checkmark-circle';
-    case 'in-use':
-      return 'person-circle';
-    case 'maintenance':
-      return 'construct';
-    case 'retired':
+    case 'Has Defects':
+      return 'warning';
+    case 'BAD':
       return 'close-circle';
     default:
       return 'help-circle';
+  }
+};
+
+/**
+ * Get the Gruvbox color for a category
+ */
+export const getCategoryHexColor = (category: Category): string => {
+  switch (category) {
+    case 'Fixed':
+      return '#689d6a'; // Aqua
+    case 'Electronics':
+      return '#458588'; // Blue
+    default:
+      return '#7c6f64';
+  }
+};
+
+/**
+ * Get the icon name for a category
+ */
+export const getCategoryIcon = (category: Category): string => {
+  switch (category) {
+    case 'Fixed':
+      return 'business';
+    case 'Electronics':
+      return 'hardware-chip';
+    default:
+      return 'cube';
   }
 };

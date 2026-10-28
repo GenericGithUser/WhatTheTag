@@ -20,10 +20,10 @@ import {
   IonItem,
   IonInput,
 } from '@ionic/react';
-import { scanOutline, arrowBackOutline, flashOutline, flashOffOutline } from 'ionicons/icons';
+import { scanOutline, flashOutline, flashOffOutline } from 'ionicons/icons';
 import { Html5Qrcode, Html5QrcodeSupportedFormats } from 'html5-qrcode';
 import { InventoryItem } from '../types';
-import { getInventoryItemByQR, getStatusColor } from '../data/inventory';
+import { getInventoryItemByAssetNumber, getStatusColor, getCategoryHexColor } from '../data/inventory';
 import { useNavigate } from 'react-router-dom';
 
 const Scanner: React.FC = () => {
@@ -95,16 +95,16 @@ const Scanner: React.FC = () => {
     setScanning(false);
   };
 
-  const handleScanResult = async (qrCode: string) => {
+  const handleScanResult = async (assetNumber: string) => {
     stopScanner();
     setLoading(true);
 
     try {
-      const item = await getInventoryItemByQR(qrCode);
+      const item = await getInventoryItemByAssetNumber(assetNumber);
       if (item) {
         setScannedItem(item);
       } else {
-        setError(`No inventory item found for code: ${qrCode}`);
+        setError(`No inventory item found for asset number: ${assetNumber}`);
         setShowAlert(true);
       }
     } catch (err) {
@@ -130,7 +130,7 @@ const Scanner: React.FC = () => {
           <IonButtons slot="start">
             <IonBackButton defaultHref="/" text="Dashboard" />
           </IonButtons>
-          <IonTitle style={{ color: '#282828' }}>QR Scanner</IonTitle>
+          <IonTitle style={{ color: '#282828' }}>Scan Asset</IonTitle>
         </IonToolbar>
       </IonHeader>
       <IonContent className="ion-padding">
@@ -143,10 +143,10 @@ const Scanner: React.FC = () => {
               <IonIcon icon={scanOutline} style={{ fontSize: '80px', color: '#458588' }} />
             </div>
             <h2 className="text-xl font-bold mb-2 text-center" style={{ color: '#282828' }}>
-              Scan QR Code
+              Scan Asset Tag
             </h2>
             <p className="text-center mb-6 max-w-xs" style={{ color: '#665c54' }}>
-              Point your camera at the QR code on an inventory item to view its details
+              Point your camera at the QR code or barcode on an asset to view its details
             </p>
             <IonButton
               expand="block"
@@ -161,13 +161,13 @@ const Scanner: React.FC = () => {
             {/* Manual Entry */}
             <div className="w-full max-w-xs mt-4">
               <p className="text-center text-sm mb-2" style={{ color: '#7c6f64' }}>
-                Or enter code manually:
+                Or enter asset number manually:
               </p>
               <IonItem className="rounded-lg overflow-hidden" style={{ '--background': '#ebdbb2' } as any}>
                 <IonInput
                   value={manualCode}
                   onIonInput={(e) => setManualCode(e.detail.value || '')}
-                  placeholder="e.g., INV-001-LAPTOP"
+                  placeholder="e.g., AST-001"
                   style={{ '--color': '#282828', '--placeholder-color': '#7c6f64' } as any}
                   onKeyDown={(e) => {
                     if (e.key === 'Enter') handleManualSearch();
@@ -192,7 +192,7 @@ const Scanner: React.FC = () => {
                 Quick Demo:
               </p>
               <div className="grid grid-cols-2 gap-2">
-                {['INV-001-LAPTOP', 'INV-002-MONITOR', 'INV-003-CHAIR', 'INV-005-TABLET'].map(
+                {['AST-001', 'AST-002', 'AST-003', 'AST-004', 'AST-005', 'AST-006'].map(
                   (code) => (
                     <IonButton
                       key={code}
@@ -202,7 +202,7 @@ const Scanner: React.FC = () => {
                       className="text-xs"
                       style={{ '--border-color': '#689d6a', '--color': '#689d6a' } as any}
                     >
-                      {code.split('-').slice(1).join('-')}
+                      {code}
                     </IonButton>
                   )
                 )}
@@ -228,7 +228,7 @@ const Scanner: React.FC = () => {
               </div>
             </div>
             <p className="text-sm mb-4" style={{ color: '#665c54' }}>
-              Position the QR code within the frame
+              Position the QR code or barcode within the frame
             </p>
             <IonButton
               color="danger"
@@ -244,7 +244,7 @@ const Scanner: React.FC = () => {
         {loading && (
           <div className="flex flex-col items-center justify-center py-12">
             <IonSpinner name="crescent" className="mb-4" style={{ color: '#458588' }} />
-            <p style={{ color: '#665c54' }}>Looking up item...</p>
+            <p style={{ color: '#665c54' }}>Looking up asset...</p>
           </div>
         )}
 
@@ -256,41 +256,39 @@ const Scanner: React.FC = () => {
                   <IonAvatar className="!w-32 !h-32 rounded-xl overflow-hidden shadow-md">
                     <img
                       src={scannedItem.image}
-                      alt={scannedItem.name}
+                      alt={scannedItem.itemName}
                       className="w-full h-full object-cover"
                       onError={(e) => {
                         (e.target as HTMLImageElement).src =
-                          'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect fill="%23d5c4a1" width="100" height="100"/><text x="50" y="55" text-anchor="middle" fill="%237c6f64" font-size="12">No Image</text></svg>';
+                          'image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect fill="%23d5c4a1" width="100" height="100"/><text x="50" y="55" text-anchor="middle" fill="%237c6f64" font-size="12">No Image</text></svg>';
                       }}
                     />
                   </IonAvatar>
                 </div>
                 <IonCardTitle className="text-lg" style={{ color: '#282828' }}>
-                  {scannedItem.name}
+                  {scannedItem.itemName}
                 </IonCardTitle>
-                <IonBadge color={getStatusColor(scannedItem.status)} className="mt-2">
-                  {scannedItem.status.replace('-', ' ').toUpperCase()}
-                </IonBadge>
+                <p className="text-sm mt-1" style={{ color: '#665c54' }}>
+                  Asset: {scannedItem.assetNumber}
+                </p>
+                <div className="flex gap-2 justify-center mt-2">
+                  <IonBadge color={getStatusColor(scannedItem.status)}>
+                    {scannedItem.status.toUpperCase()}
+                  </IonBadge>
+                  <IonBadge style={{ background: getCategoryHexColor(scannedItem.category), color: '#fbf1c7' } as any}>
+                    {scannedItem.category}
+                  </IonBadge>
+                </div>
               </IonCardHeader>
               <IonCardContent>
                 <div className="space-y-3">
                   <div className="rounded-lg p-3" style={{ background: '#d5c4a1' }}>
-                    <p className="text-xs uppercase font-medium" style={{ color: '#665c54' }}>Owner</p>
-                    <p className="font-semibold" style={{ color: '#282828' }}>{scannedItem.ownerName}</p>
+                    <p className="text-xs uppercase font-medium" style={{ color: '#665c54' }}>Designated Owner</p>
+                    <p className="font-semibold" style={{ color: '#282828' }}>{scannedItem.designatedOwner}</p>
                   </div>
                   <div className="rounded-lg p-3" style={{ background: '#d5c4a1' }}>
-                    <p className="text-xs uppercase font-medium" style={{ color: '#665c54' }}>Location</p>
-                    <p className="font-semibold" style={{ color: '#282828' }}>{scannedItem.location}</p>
-                  </div>
-                  <div className="rounded-lg p-3" style={{ background: '#d5c4a1' }}>
-                    <p className="text-xs uppercase font-medium" style={{ color: '#665c54' }}>Category</p>
-                    <p className="font-semibold" style={{ color: '#282828' }}>{scannedItem.category}</p>
-                  </div>
-                  <div className="rounded-lg p-3" style={{ background: '#d5c4a1' }}>
-                    <p className="text-xs uppercase font-medium" style={{ color: '#665c54' }}>Serial Number</p>
-                    <p className="font-semibold font-mono text-sm" style={{ color: '#458588' }}>
-                      {scannedItem.serialNumber}
-                    </p>
+                    <p className="text-xs uppercase font-medium" style={{ color: '#665c54' }}>Description</p>
+                    <p className="text-sm" style={{ color: '#282828' }}>{scannedItem.itemDescription}</p>
                   </div>
                 </div>
               </IonCardContent>
@@ -319,7 +317,7 @@ const Scanner: React.FC = () => {
         <IonAlert
           isOpen={showAlert}
           onDidDismiss={() => setShowAlert(false)}
-          header="Item Not Found"
+          header="Asset Not Found"
           message={error}
           buttons={['OK']}
           cssClass="gruvbox-alert"

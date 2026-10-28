@@ -1,4 +1,4 @@
-const CACHE_NAME = 'inventory-qr-scanner-v1';
+const CACHE_NAME = 'whatthetag-v1';
 const urlsToCache = [
   '/',
   '/index.html',
