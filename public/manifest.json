@@ -1,7 +1,7 @@
 {
-  "name": "Inventory QR Scanner",
-  "short_name": "InvScanner",
-  "description": "Scan and manage your inventory items with QR codes",
+  "name": "WhatTheTag",
+  "short_name": "WhatTheTag",
+  "description": "Scan and manage your inventory assets with QR codes and barcodes",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#fbf1c7",

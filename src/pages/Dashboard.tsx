@@ -18,9 +18,9 @@ import {
   IonItem,
   IonAvatar,
 } from '@ionic/react';
-import { scanOutline, cubeOutline, peopleOutline, alertCircleOutline } from 'ionicons/icons';
-import { InventoryItem } from '../types';
-import { getInventoryItems, getStatusColor } from '../data/inventory';
+import { scanOutline, cubeOutline, businessOutline, hardwareChipOutline, alertCircleOutline } from 'ionicons/icons';
+import { InventoryItem, Category, Status } from '../types';
+import { getInventoryItems, getStatusColor, getCategoryHexColor } from '../data/inventory';
 import { useNavigate } from 'react-router-dom';
 
 const Dashboard: React.FC = () => {
@@ -50,17 +50,22 @@ const Dashboard: React.FC = () => {
     let filtered = items;
 
     if (segment !== 'all') {
-      filtered = filtered.filter((item) => item.status === segment);
+      if (segment === 'Fixed' || segment === 'Electronics') {
+        filtered = filtered.filter((item) => item.category === segment);
+      } else {
+        filtered = filtered.filter((item) => item.status === segment);
+      }
     }
 
     if (searchText) {
       const search = searchText.toLowerCase();
       filtered = filtered.filter(
         (item) =>
-          item.name.toLowerCase().includes(search) ||
-          item.ownerName.toLowerCase().includes(search) ||
+          item.itemName.toLowerCase().includes(search) ||
+          item.designatedOwner.toLowerCase().includes(search) ||
           item.category.toLowerCase().includes(search) ||
-          item.qrCode.toLowerCase().includes(search)
+          item.assetNumber.toLowerCase().includes(search) ||
+          item.itemDescription.toLowerCase().includes(search)
       );
     }
 
@@ -70,20 +75,27 @@ const Dashboard: React.FC = () => {
   const getStatusCounts = () => {
     return {
       total: items.length,
-      available: items.filter((i) => i.status === 'available').length,
-      'in-use': items.filter((i) => i.status === 'in-use').length,
-      maintenance: items.filter((i) => i.status === 'maintenance').length,
-      retired: items.filter((i) => i.status === 'retired').length,
+      Good: items.filter((i) => i.status === 'Good').length,
+      'Has Defects': items.filter((i) => i.status === 'Has Defects').length,
+      BAD: items.filter((i) => i.status === 'BAD').length,
     };
   };
 
-  const counts = getStatusCounts();
+  const getCategoryCounts = () => {
+    return {
+      Fixed: items.filter((i) => i.category === 'Fixed').length,
+      Electronics: items.filter((i) => i.category === 'Electronics').length,
+    };
+  };
+
+  const statusCounts = getStatusCounts();
+  const categoryCounts = getCategoryCounts();
 
   return (
     <IonPage>
       <IonHeader>
         <IonToolbar>
-          <IonTitle style={{ color: '#282828' }}>Inventory Dashboard</IonTitle>
+          <IonTitle style={{ color: '#282828' }}>WhatTheTag</IonTitle>
           <IonIcon
             icon={scanOutline}
             slot="end"
@@ -100,7 +112,7 @@ const Dashboard: React.FC = () => {
               <div className="flex items-center gap-2">
                 <IonIcon icon={cubeOutline} style={{ fontSize: '24px', color: '#458588' }} />
                 <div>
-                  <p className="text-2xl font-bold" style={{ color: '#458588' }}>{counts.total}</p>
+                  <p className="text-2xl font-bold" style={{ color: '#458588' }}>{statusCounts.total}</p>
                   <p className="text-xs" style={{ color: '#665c54' }}>Total Items</p>
                 </div>
               </div>
@@ -111,19 +123,19 @@ const Dashboard: React.FC = () => {
               <div className="flex items-center gap-2">
                 <IonIcon icon="checkmark-circle" style={{ fontSize: '24px', color: '#98971a' }} />
                 <div>
-                  <p className="text-2xl font-bold" style={{ color: '#98971a' }}>{counts.available}</p>
-                  <p className="text-xs" style={{ color: '#665c54' }}>Available</p>
+                  <p className="text-2xl font-bold" style={{ color: '#98971a' }}>{statusCounts.Good}</p>
+                  <p className="text-xs" style={{ color: '#665c54' }}>Good</p>
                 </div>
               </div>
             </IonCardContent>
           </IonCard>
-          <IonCard className="!m-0" style={{ borderLeft: '4px solid #d65d0e', background: '#ebdbb2' }}>
+          <IonCard className="!m-0" style={{ borderLeft: '4px solid #d79921', background: '#ebdbb2' }}>
             <IonCardContent className="!p-3">
               <div className="flex items-center gap-2">
-                <IonIcon icon={peopleOutline} style={{ fontSize: '24px', color: '#d65d0e' }} />
+                <IonIcon icon="warning" style={{ fontSize: '24px', color: '#d79921' }} />
                 <div>
-                  <p className="text-2xl font-bold" style={{ color: '#d65d0e' }}>{counts['in-use']}</p>
-                  <p className="text-xs" style={{ color: '#665c54' }}>In Use</p>
+                  <p className="text-2xl font-bold" style={{ color: '#d79921' }}>{statusCounts['Has Defects']}</p>
+                  <p className="text-xs" style={{ color: '#665c54' }}>Has Defects</p>
                 </div>
               </div>
             </IonCardContent>
@@ -133,8 +145,34 @@ const Dashboard: React.FC = () => {
               <div className="flex items-center gap-2">
                 <IonIcon icon={alertCircleOutline} style={{ fontSize: '24px', color: '#cc241d' }} />
                 <div>
-                  <p className="text-2xl font-bold" style={{ color: '#cc241d' }}>{counts.maintenance}</p>
-                  <p className="text-xs" style={{ color: '#665c54' }}>Maintenance</p>
+                  <p className="text-2xl font-bold" style={{ color: '#cc241d' }}>{statusCounts.BAD}</p>
+                  <p className="text-xs" style={{ color: '#665c54' }}>BAD</p>
+                </div>
+              </div>
+            </IonCardContent>
+          </IonCard>
+        </div>
+
+        {/* Category Stats */}
+        <div className="grid grid-cols-2 gap-3 mb-4">
+          <IonCard className="!m-0" style={{ borderLeft: '4px solid #689d6a', background: '#ebdbb2' }}>
+            <IonCardContent className="!p-3">
+              <div className="flex items-center gap-2">
+                <IonIcon icon={businessOutline} style={{ fontSize: '24px', color: '#689d6a' }} />
+                <div>
+                  <p className="text-2xl font-bold" style={{ color: '#689d6a' }}>{categoryCounts.Fixed}</p>
+                  <p className="text-xs" style={{ color: '#665c54' }}>Fixed Assets</p>
+                </div>
+              </div>
+            </IonCardContent>
+          </IonCard>
+          <IonCard className="!m-0" style={{ borderLeft: '4px solid #458588', background: '#ebdbb2' }}>
+            <IonCardContent className="!p-3">
+              <div className="flex items-center gap-2">
+                <IonIcon icon={hardwareChipOutline} style={{ fontSize: '24px', color: '#458588' }} />
+                <div>
+                  <p className="text-2xl font-bold" style={{ color: '#458588' }}>{categoryCounts.Electronics}</p>
+                  <p className="text-xs" style={{ color: '#665c54' }}>Electronics</p>
                 </div>
               </div>
             </IonCardContent>
@@ -145,7 +183,7 @@ const Dashboard: React.FC = () => {
         <IonSearchbar
           value={searchText}
           onIonInput={(e) => setSearchText(e.detail.value || '')}
-          placeholder="Search items, owners, categories..."
+          placeholder="Search items, owners, asset numbers..."
           className="mb-3"
           debounce={300}
         />
@@ -158,19 +196,22 @@ const Dashboard: React.FC = () => {
           className="mb-4"
         >
           <IonSegmentButton value="all">
-            <IonLabel>All ({counts.total})</IonLabel>
+            <IonLabel>All ({statusCounts.total})</IonLabel>
           </IonSegmentButton>
-          <IonSegmentButton value="available">
-            <IonLabel>Available</IonLabel>
+          <IonSegmentButton value="Good">
+            <IonLabel>Good</IonLabel>
           </IonSegmentButton>
-          <IonSegmentButton value="in-use">
-            <IonLabel>In Use</IonLabel>
+          <IonSegmentButton value="Has Defects">
+            <IonLabel>Defects</IonLabel>
           </IonSegmentButton>
-          <IonSegmentButton value="maintenance">
-            <IonLabel>Maintenance</IonLabel>
+          <IonSegmentButton value="BAD">
+            <IonLabel>BAD</IonLabel>
           </IonSegmentButton>
-          <IonSegmentButton value="retired">
-            <IonLabel>Retired</IonLabel>
+          <IonSegmentButton value="Fixed">
+            <IonLabel>Fixed</IonLabel>
+          </IonSegmentButton>
+          <IonSegmentButton value="Electronics">
+            <IonLabel>Electronics</IonLabel>
           </IonSegmentButton>
         </IonSegment>
 
@@ -197,21 +238,24 @@ const Dashboard: React.FC = () => {
                   <IonAvatar slot="start" className="!w-16 !h-16 !rounded-lg overflow-hidden mr-3">
                     <img
                       src={item.image}
-                      alt={item.name}
+                      alt={item.itemName}
                       className="w-full h-full object-cover"
                       onError={(e) => {
-                        (e.target as HTMLImageElement).src = 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect fill="%23d5c4a1" width="100" height="100"/><text x="50" y="55" text-anchor="middle" fill="%237c6f64" font-size="12">No Image</text></svg>';
+                        (e.target as HTMLImageElement).src = 'image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect fill="%23d5c4a1" width="100" height="100"/><text x="50" y="55" text-anchor="middle" fill="%237c6f64" font-size="12">No Image</text></svg>';
                       }}
                     />
                   </IonAvatar>
                   <div className="flex-1">
-                    <h3 className="font-semibold text-sm mb-1" style={{ color: '#282828' }}>{item.name}</h3>
-                    <p className="text-xs mb-1" style={{ color: '#665c54' }}>{item.ownerName}</p>
+                    <h3 className="font-semibold text-sm mb-1" style={{ color: '#282828' }}>{item.itemName}</h3>
+                    <p className="text-xs mb-1" style={{ color: '#665c54' }}>{item.designatedOwner}</p>
                     <div className="flex items-center gap-2">
                       <IonBadge color={getStatusColor(item.status)} className="text-xs">
-                        {item.status.replace('-', ' ').toUpperCase()}
+                        {item.status.toUpperCase()}
                       </IonBadge>
-                      <IonChip className="!m-0 !h-6 text-xs" style={{ background: '#d5c4a1', color: '#3c3836' } as any}>
+                      <IonChip 
+                        className="!m-0 !h-6 text-xs" 
+                        style={{ background: getCategoryHexColor(item.category), color: '#fbf1c7' } as any}
+                      >
                         <IonLabel>{item.category}</IonLabel>
                       </IonChip>
                     </div>

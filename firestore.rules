@@ -1,0 +1,78 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Helper function to check if user is authenticated
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+    
+    // Helper function to check if user has admin role
+    function isAdmin() {
+      return isAuthenticated() && 
+             get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin';
+    }
+    
+    // Inventory collection rules
+    match /inventory/{itemId} {
+      // Anyone can read inventory items (public access for scanning)
+      allow read: if true;
+      
+      // Only authenticated users can create items
+      allow create: if isAuthenticated() &&
+                    // Validate required fields exist
+                    request.resource.data.keys().hasAll(['assetNumber', 'itemName', 'itemDescription', 'category', 'status', 'designatedOwner', 'image']) &&
+                    // Validate category is either Fixed or Electronics
+                    request.resource.data.category in ['Fixed', 'Electronics'] &&
+                    // Validate status is Good, Has Defects, or BAD
+                    request.resource.data.status in ['Good', 'Has Defects', 'BAD'] &&
+                    // Validate assetNumber is a non-empty string
+                    request.resource.data.assetNumber is string &&
+                    request.resource.data.assetNumber.size() > 0 &&
+                    // Validate itemName is a non-empty string
+                    request.resource.data.itemName is string &&
+                    request.resource.data.itemName.size() > 0 &&
+                    // Validate designatedOwner is a non-empty string
+                    request.resource.data.designatedOwner is string &&
+                    request.resource.data.designatedOwner.size() > 0 &&
+                    // Validate image is a valid URL string
+                    request.resource.data.image is string &&
+                    request.resource.data.image.matches('^https?://.*');
+      
+      // Only admins can update or delete items
+      allow update: if isAdmin() &&
+                    // If category is being changed, validate it
+                    (request.resource.data.category == resource.data.category ||
+                     request.resource.data.category in ['Fixed', 'Electronics']) &&
+                    // If status is being changed, validate it
+                    (request.resource.data.status == resource.data.status ||
+                     request.resource.data.status in ['Good', 'Has Defects', 'BAD']);
+      
+      allow delete: if isAdmin();
+    }
+    
+    // Users collection (for role management)
+    match /users/{userId} {
+      // Users can read their own data
+      allow read: if isAuthenticated() && request.auth.uid == userId;
+      
+      // Only admins can read other users' data
+      allow read: if isAdmin();
+      
+      // Users can create their own document on first login
+      allow create: if isAuthenticated() && request.auth.uid == userId &&
+                    request.resource.data.keys().hasAll(['email', 'role']) &&
+                    request.resource.data.role in ['user', 'admin'];
+      
+      // Users can update their own data (except role)
+      allow update: if isAuthenticated() && request.auth.uid == userId &&
+                    request.resource.data.role == resource.data.role;
+      
+      // Only admins can update other users or change roles
+      allow update: if isAdmin();
+      
+      // Only admins can delete users
+      allow delete: if isAdmin();
+    }
+  }
+}

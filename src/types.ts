@@ -1,14 +1,15 @@
+export type Category = 'Fixed' | 'Electronics';
+export type Status = 'Good' | 'Has Defects' | 'BAD';
+
 export interface InventoryItem {
   id: string;
-  qrCode: string;
-  name: string;
+  assetNumber: string;
+  itemName: string;
+  itemDescription: string;
+  category: Category;
+  status: Status;
+  designatedOwner: string;
   image: string;
-  ownerName: string;
-  status: 'available' | 'in-use' | 'maintenance' | 'retired';
-  category: string;
-  location: string;
-  lastUpdated: string;
-  description: string;
-  serialNumber: string;
-  purchaseDate: string;
+  createdAt?: string;
+  updatedAt?: string;
 }
