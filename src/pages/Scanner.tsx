@@ -48,7 +48,15 @@ const Scanner: React.FC = () => {
     setScannedItem(null);
     setScanning(true);
 
+    // Wait for the DOM element to be rendered
+    await new Promise(resolve => setTimeout(resolve, 100));
+
     try {
+      const element = document.getElementById('qr-reader');
+      if (!element) {
+        throw new Error('QR reader element not found');
+      }
+
       const html5Qrcode = new Html5Qrcode('qr-reader', {
         formatsToSupport: [
           Html5QrcodeSupportedFormats.QR_CODE,
@@ -77,7 +85,7 @@ const Scanner: React.FC = () => {
       );
     } catch (err) {
       console.error('Scanner error:', err);
-      setError('Unable to access camera. Please ensure camera permissions are granted.');
+      setError('Unable to access camera. Please ensure camera permissions are granted and you are using HTTPS or localhost.');
       setScanning(false);
     }
   };

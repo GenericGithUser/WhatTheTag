@@ -96,7 +96,7 @@ const ItemDetail: React.FC = () => {
       <IonHeader>
         <IonToolbar>
           <IonButtons slot="start">
-            <IonBackButton defaultHref="/" text="Back" />
+            <IonBackButton defaultHref="/" text="Dashboard" />
           </IonButtons>
           <IonTitle style={{ color: '#282828' }}>Asset Details</IonTitle>
         </IonToolbar>
