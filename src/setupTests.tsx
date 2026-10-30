@@ -64,7 +64,7 @@ jest.mock('@ionic/react', () => {
         onChange: (e: any) => onIonInput?.({ detail: { value: e.target.value } }),
         ...props,
       }),
-    IonSegment: ({ children, value }: any) =>
+    IonSegment: ({ children, value, onIonChange }: any) =>
       React.createElement('div', { 'data-testid': 'ion-segment', 'data-value': value }, children),
     IonSegmentButton: ({ children, value }: any) =>
       React.createElement('button', { 'data-testid': 'ion-segment-button', 'data-value': value }, children),
@@ -72,17 +72,19 @@ jest.mock('@ionic/react', () => {
     IonItem: ({ children }: any) => React.createElement('div', { 'data-testid': 'ion-item' }, children),
     IonAvatar: ({ children }: any) => React.createElement('div', { 'data-testid': 'ion-avatar' }, children),
     IonChip: ({ children }: any) => React.createElement('div', { 'data-testid': 'ion-chip' }, children),
-    IonBackButton: (props: any) => React.createElement('button', { 'data-testid': 'ion-back-button', ...props }),
+    IonBackButton: ({ defaultHref, text, ...props }: any) => 
+      React.createElement('button', { 'data-testid': 'ion-back-button', 'data-default-href': defaultHref, ...props }, text),
     IonButtons: ({ children }: any) => React.createElement('div', { 'data-testid': 'ion-buttons' }, children),
     IonAlert: ({ isOpen, onDidDismiss }: any) =>
       isOpen ? React.createElement('div', { 'data-testid': 'ion-alert' },
         React.createElement('button', { onClick: onDidDismiss }, 'Close')) : null,
-    IonInput: ({ value, onIonInput, placeholder, ...props }: any) =>
+    IonInput: ({ value, onIonInput, placeholder, onKeyDown, ...props }: any) =>
       React.createElement('input', {
         'data-testid': 'ion-input',
         value,
         placeholder,
         onChange: (e: any) => onIonInput?.({ detail: { value: e.target.value } }),
+        onKeyDown,
         ...props,
       }),
     setupIonicReact: jest.fn(),
@@ -96,31 +98,6 @@ jest.mock('@ionic/react-router', () => {
     IonReactRouter: ({ children }: any) => React.createElement('div', { 'data-testid': 'ion-react-router' }, children),
   };
 });
-
-// Mock react-router-dom
-const mockNavigate = jest.fn();
-jest.mock('react-router-dom', () => ({
-  useNavigate: () => mockNavigate,
-  useParams: () => ({ id: 'test-id' }),
-  Routes: ({ children }: any) => children,
-  Route: ({ element }: any) => element,
-  Navigate: () => null,
-}));
-
-// Mock html5-qrcode
-jest.mock('html5-qrcode', () => ({
-  Html5Qrcode: jest.fn().mockImplementation(() => ({
-    start: jest.fn().mockResolvedValue(undefined),
-    stop: jest.fn().mockResolvedValue(undefined),
-    clear: jest.fn(),
-  })),
-  Html5QrcodeSupportedFormats: {
-    QR_CODE: 0,
-    CODE_128: 1,
-    CODE_39: 2,
-    EAN_13: 3,
-  },
-}));
 
 // Mock ionicons
 jest.mock('ionicons/icons', () => ({
@@ -142,6 +119,21 @@ jest.mock('ionicons/icons', () => ({
   helpCircle: 'help-circle',
 }));
 
+// Mock html5-qrcode
+jest.mock('html5-qrcode', () => ({
+  Html5Qrcode: jest.fn().mockImplementation(() => ({
+    start: jest.fn().mockResolvedValue(undefined),
+    stop: jest.fn().mockResolvedValue(undefined),
+    clear: jest.fn(),
+  })),
+  Html5QrcodeSupportedFormats: {
+    QR_CODE: 0,
+    CODE_128: 1,
+    CODE_39: 2,
+    EAN_13: 3,
+  },
+}));
+
 // Mock firebase
 jest.mock('firebase/app', () => ({
   initializeApp: jest.fn(() => ({})),
@@ -159,6 +151,3 @@ jest.mock('firebase/firestore', () => ({
   updateDoc: jest.fn(),
   deleteDoc: jest.fn(),
 }));
-
-// Export mockNavigate for use in tests
-export { mockNavigate };

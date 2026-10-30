@@ -1,16 +1,4 @@
-import {
-  getInventoryItems,
-  getInventoryItemById,
-  getInventoryItemByAssetNumber,
-  addInventoryItem,
-  updateInventoryItem,
-  deleteInventoryItem,
-  getItemsByCategory,
-  getItemsByStatus,
-} from '../firebase/config';
-import { InventoryItem } from '../types';
-
-// Mock Firebase modules
+// Mock Firebase modules BEFORE importing the config
 const mockGetDocs = jest.fn();
 const mockGetDoc = jest.fn();
 const mockAddDoc = jest.fn();
@@ -37,6 +25,19 @@ jest.mock('firebase/firestore', () => ({
   updateDoc: (...args: any[]) => mockUpdateDoc(...args),
   deleteDoc: (...args: any[]) => mockDeleteDoc(...args),
 }));
+
+// Import after mocks are set up
+import {
+  getInventoryItems,
+  getInventoryItemById,
+  getInventoryItemByAssetNumber,
+  addInventoryItem,
+  updateInventoryItem,
+  deleteInventoryItem,
+  getItemsByCategory,
+  getItemsByStatus,
+} from '../firebase/config';
+import { InventoryItem } from '../types';
 
 describe('Firebase Firestore Configuration', () => {
   beforeEach(() => {

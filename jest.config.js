@@ -5,14 +5,18 @@ export default {
   moduleNameMapper: {
     '\\.(css|less|scss|sass)$': 'identity-obj-proxy',
     '^@/(.*)$': '<rootDir>/src/$1',
+    '^firebase/(.*)$': '<rootDir>/node_modules/firebase/$1',
+    '^@firebase/(.*)$': '<rootDir>/node_modules/@firebase/$1',
   },
   setupFilesAfterEnv: ['<rootDir>/src/setupTests.tsx'],
   transform: {
-    '^.+\\.tsx?$': ['ts-jest', {
+    '^.+\\.(ts|tsx)$': ['ts-jest', {
+      useESM: false,
       tsconfig: {
         jsx: 'react-jsx',
         esModuleInterop: true,
         allowSyntheticDefaultImports: true,
+        module: 'commonjs',
       },
     }],
   },
@@ -25,6 +29,7 @@ export default {
   ],
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'json'],
   transformIgnorePatterns: [
-    'node_modules/(?!(firebase|@firebase)/)',
+    'node_modules/(?!(firebase|@firebase|html5-qrcode)/)',
   ],
+  extensionsToTreatAsEsm: ['.ts', '.tsx'],
 };
