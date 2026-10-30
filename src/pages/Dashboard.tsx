@@ -248,15 +248,24 @@ const Dashboard: React.FC = () => {
                   <div className="flex-1">
                     <h3 className="font-semibold text-sm mb-1" style={{ color: '#282828' }}>{item.itemName}</h3>
                     <p className="text-xs mb-1" style={{ color: '#665c54' }}>{item.designatedOwner}</p>
-                    <div className="flex items-center gap-2">
-                      <IonBadge color={getStatusColor(item.status)} className="text-xs">
+                    <div className="flex items-center gap-2 flex-wrap">
+                      <IonBadge 
+                        color={getStatusColor(item.status)} 
+                        className="text-xs"
+                        style={{ whiteSpace: 'nowrap', padding: '4px 8px', height: 'auto' }}
+                      >
                         {item.status.toUpperCase()}
                       </IonBadge>
                       <IonChip 
-                        className="!m-0 !h-6 text-xs" 
-                        style={{ background: getCategoryHexColor(item.category), color: '#fbf1c7' } as any}
+                        className="!m-0 text-xs" 
+                        style={{ 
+                          background: getCategoryHexColor(item.category), 
+                          color: '#fbf1c7',
+                          margin: '0',
+                          height: '24px'
+                        } as any}
                       >
-                        <IonLabel>{item.category}</IonLabel>
+                        <IonLabel style={{ margin: '0 8px', whiteSpace: 'nowrap' }}>{item.category}</IonLabel>
                       </IonChip>
                     </div>
                   </div>

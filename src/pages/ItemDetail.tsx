@@ -126,16 +126,26 @@ const ItemDetail: React.FC = () => {
           <p className="text-sm mt-1 font-mono" style={{ color: '#458588' }}>
             {item.assetNumber}
           </p>
-          <div className="flex gap-2 mt-2">
-            <IonBadge color={getStatusColor(item.status)} className="text-sm px-3 py-1">
-              <IonIcon icon={getStatusIcon(item.status)} className="mr-1" />
+          <div className="flex gap-2 mt-2 flex-wrap">
+            <IonBadge 
+              color={getStatusColor(item.status)} 
+              className="text-sm px-3 py-1.5"
+              style={{ whiteSpace: 'nowrap', display: 'inline-flex', alignItems: 'center' }}
+            >
+              <IonIcon icon={getStatusIcon(item.status)} style={{ marginRight: '6px' }} />
               {item.status.toUpperCase()}
             </IonBadge>
             <IonBadge 
-              className="text-sm px-3 py-1"
-              style={{ background: getCategoryHexColor(item.category), color: '#fbf1c7' } as any}
+              className="text-sm px-3 py-1.5"
+              style={{ 
+                background: getCategoryHexColor(item.category), 
+                color: '#fbf1c7',
+                whiteSpace: 'nowrap',
+                display: 'inline-flex',
+                alignItems: 'center'
+              } as any}
             >
-              <IonIcon icon={getCategoryIcon(item.category)} className="mr-1" />
+              <IonIcon icon={getCategoryIcon(item.category)} style={{ marginRight: '6px' }} />
               {item.category}
             </IonBadge>
           </div>
@@ -143,7 +153,7 @@ const ItemDetail: React.FC = () => {
 
         {/* Description */}
         <IonCard className="!m-0 mb-4" style={{ background: '#ebdbb2' }}>
-          <IonCardContent>
+          <IonCardContent className="!p-4">
             <p className="leading-relaxed" style={{ color: '#504945' }}>
               {item.itemDescription}
             </p>
@@ -152,44 +162,44 @@ const ItemDetail: React.FC = () => {
 
         {/* Details */}
         <IonCard className="!m-0 mb-4" style={{ background: '#ebdbb2' }}>
-          <IonCardHeader>
+          <IonCardHeader className="!pb-2">
             <IonCardTitle className="text-base" style={{ color: '#282828' }}>
               Asset Information
             </IonCardTitle>
           </IonCardHeader>
-          <IonCardContent>
-            <IonItem lines="full" className="!pl-0">
-              <IonIcon icon={pricetagOutline} slot="start" style={{ color: '#458588' }} />
-              <IonLabel>
+          <IonCardContent className="!p-4">
+            <IonItem lines="full" className="!pl-0 !--padding-start:0">
+              <IonIcon icon={pricetagOutline} slot="start" style={{ color: '#458588', marginRight: '12px', fontSize: '20px' }} />
+              <IonLabel className="!ml-2">
                 <p className="text-xs" style={{ color: '#665c54' }}>Asset Number</p>
                 <p className="font-semibold font-mono" style={{ color: '#458588' }}>{item.assetNumber}</p>
               </IonLabel>
             </IonItem>
-            <IonItem lines="full" className="!pl-0">
-              <IonIcon icon={personOutline} slot="start" style={{ color: '#d65d0e' }} />
-              <IonLabel>
+            <IonItem lines="full" className="!pl-0 !--padding-start:0">
+              <IonIcon icon={personOutline} slot="start" style={{ color: '#d65d0e', marginRight: '12px', fontSize: '20px' }} />
+              <IonLabel className="!ml-2">
                 <p className="text-xs" style={{ color: '#665c54' }}>Designated Owner</p>
                 <p className="font-semibold" style={{ color: '#282828' }}>{item.designatedOwner}</p>
               </IonLabel>
             </IonItem>
-            <IonItem lines="full" className="!pl-0">
-              <IonIcon icon={item.category === 'Fixed' ? businessOutline : hardwareChipOutline} slot="start" style={{ color: getCategoryHexColor(item.category) }} />
-              <IonLabel>
+            <IonItem lines="full" className="!pl-0 !--padding-start:0">
+              <IonIcon icon={item.category === 'Fixed' ? businessOutline : hardwareChipOutline} slot="start" style={{ color: getCategoryHexColor(item.category), marginRight: '12px', fontSize: '20px' }} />
+              <IonLabel className="!ml-2">
                 <p className="text-xs" style={{ color: '#665c54' }}>Category</p>
                 <p className="font-semibold" style={{ color: '#282828' }}>{item.category}</p>
               </IonLabel>
             </IonItem>
-            <IonItem lines="full" className="!pl-0">
-              <IonIcon icon={getStatusIcon(item.status)} slot="start" style={{ color: getStatusHexColor(item.status) }} />
-              <IonLabel>
+            <IonItem lines="full" className="!pl-0 !--padding-start:0">
+              <IonIcon icon={getStatusIcon(item.status)} slot="start" style={{ color: getStatusHexColor(item.status), marginRight: '12px', fontSize: '20px' }} />
+              <IonLabel className="!ml-2">
                 <p className="text-xs" style={{ color: '#665c54' }}>Status</p>
                 <p className="font-semibold" style={{ color: getStatusHexColor(item.status) }}>{item.status}</p>
               </IonLabel>
             </IonItem>
             {item.updatedAt && (
-              <IonItem lines="none" className="!pl-0">
-                <IonIcon icon={calendarOutline} slot="start" style={{ color: '#98971a' }} />
-                <IonLabel>
+              <IonItem lines="none" className="!pl-0 !--padding-start:0">
+                <IonIcon icon={calendarOutline} slot="start" style={{ color: '#98971a', marginRight: '12px', fontSize: '20px' }} />
+                <IonLabel className="!ml-2">
                   <p className="text-xs" style={{ color: '#665c54' }}>Last Updated</p>
                   <p className="font-semibold" style={{ color: '#282828' }}>
                     {new Date(item.updatedAt).toLocaleDateString('en-US', {
@@ -206,12 +216,12 @@ const ItemDetail: React.FC = () => {
 
         {/* QR Code Display */}
         <IonCard className="!m-0 mb-4" style={{ background: '#ebdbb2' }}>
-          <IonCardHeader>
+          <IonCardHeader className="!pb-2">
             <IonCardTitle className="text-base" style={{ color: '#282828' }}>
               Asset Tag
             </IonCardTitle>
           </IonCardHeader>
-          <IonCardContent className="text-center">
+          <IonCardContent className="text-center !p-4">
             <div
               className="rounded-lg p-4 inline-block"
               style={{ background: '#fbf1c7', border: '2px dashed #bdae93' }}
@@ -257,14 +267,31 @@ const ItemDetail: React.FC = () => {
 
         {/* Tags */}
         <div className="flex flex-wrap gap-2 mb-8">
-          <IonChip style={{ background: getCategoryHexColor(item.category), color: '#fbf1c7' } as any}>
-            <IonLabel>{item.category}</IonLabel>
+          <IonChip 
+            style={{ 
+              background: getCategoryHexColor(item.category), 
+              color: '#fbf1c7',
+              margin: '0',
+              height: '32px'
+            } as any}
+          >
+            <IonLabel style={{ margin: '0 12px', whiteSpace: 'nowrap' }}>{item.category}</IonLabel>
           </IonChip>
-          <IonChip color={getStatusColor(item.status)}>
-            <IonLabel>{item.status}</IonLabel>
+          <IonChip 
+            color={getStatusColor(item.status)}
+            style={{ margin: '0', height: '32px' }}
+          >
+            <IonLabel style={{ margin: '0 12px', whiteSpace: 'nowrap' }}>{item.status}</IonLabel>
           </IonChip>
-          <IonChip style={{ background: '#d5c4a1', color: '#3c3836' } as any}>
-            <IonLabel>{item.designatedOwner}</IonLabel>
+          <IonChip 
+            style={{ 
+              background: '#d5c4a1', 
+              color: '#3c3836',
+              margin: '0',
+              height: '32px'
+            } as any}
+          >
+            <IonLabel style={{ margin: '0 12px', whiteSpace: 'nowrap' }}>{item.designatedOwner}</IonLabel>
           </IonChip>
         </div>
       </IonContent>
