@@ -1,4 +1,4 @@
-// Mock Firebase modules BEFORE importing the config
+// Mock Firebase modules BEFORE any other imports
 const mockGetDocs = jest.fn();
 const mockGetDoc = jest.fn();
 const mockAddDoc = jest.fn();
@@ -39,6 +39,12 @@ import {
 } from '../firebase/config';
 import { InventoryItem } from '../types';
 
+// Helper function to create mock document
+const createMockDoc = (id: string, itemData: any) => ({
+  id,
+  data: () => itemData,
+});
+
 describe('Firebase Firestore Configuration', () => {
   beforeEach(() => {
     jest.clearAllMocks();
@@ -54,10 +60,7 @@ describe('Firebase Firestore Configuration', () => {
       mockGetDocs.mockResolvedValue({
         forEach: (callback: any) => {
           mockItems.forEach((item) => {
-            callback({
-              id: item.id,
-              data: () => item,
-            });
+            callback(createMockDoc(item.id, item));
           });
         },
       });
@@ -141,10 +144,7 @@ describe('Firebase Firestore Configuration', () => {
       mockWhere.mockReturnValue({});
       mockGetDocs.mockResolvedValue({
         empty: false,
-        docs: [{
-          id: 'test-id',
-          data: () => mockItem,
-        }],
+        docs: [createMockDoc('test-id', mockItem)],
       });
 
       const item = await getInventoryItemByAssetNumber('AST-001');
@@ -242,10 +242,7 @@ describe('Firebase Firestore Configuration', () => {
       mockGetDocs.mockResolvedValue({
         forEach: (callback: any) => {
           mockItems.forEach((item, index) => {
-            callback({
-              id: `id-${index}`,
-              data: () => item,
-            });
+            callback(createMockDoc(`id-${index}`, item));
           });
         },
       });
@@ -267,10 +264,7 @@ describe('Firebase Firestore Configuration', () => {
       mockGetDocs.mockResolvedValue({
         forEach: (callback: any) => {
           mockItems.forEach((item, index) => {
-            callback({
-              id: `id-${index}`,
-              data: () => item,
-            });
+            callback(createMockDoc(`id-${index}`, item));
           });
         },
       });

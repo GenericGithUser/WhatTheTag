@@ -1,4 +1,4 @@
-// Mock Firebase modules BEFORE importing anything else
+// Mock Firebase modules BEFORE any other imports
 jest.mock('firebase/app', () => ({
   initializeApp: jest.fn(() => ({})),
 }));
@@ -14,6 +14,18 @@ jest.mock('firebase/firestore', () => ({
   addDoc: jest.fn(),
   updateDoc: jest.fn(),
   deleteDoc: jest.fn(),
+}));
+
+// Mock the data/inventory module to avoid ESM issues
+jest.mock('../data/inventory', () => ({
+  getInventoryItems: jest.fn().mockResolvedValue([]),
+  getInventoryItemById: jest.fn().mockResolvedValue(null),
+  getInventoryItemByAssetNumber: jest.fn().mockResolvedValue(null),
+  getStatusColor: jest.fn((status: string) => 'medium'),
+  getStatusHexColor: jest.fn((status: string) => '#7c6f64'),
+  getStatusIcon: jest.fn((status: string) => 'help-circle'),
+  getCategoryHexColor: jest.fn((category: string) => '#7c6f64'),
+  getCategoryIcon: jest.fn((category: string) => 'cube'),
 }));
 
 import { render, screen } from '@testing-library/react';

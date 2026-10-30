@@ -1,3 +1,21 @@
+// Mock Firebase modules BEFORE any other imports
+jest.mock('firebase/app', () => ({
+  initializeApp: jest.fn(() => ({})),
+}));
+
+jest.mock('firebase/firestore', () => ({
+  getFirestore: jest.fn(() => ({})),
+  collection: jest.fn(),
+  doc: jest.fn(),
+  getDocs: jest.fn(),
+  getDoc: jest.fn(),
+  query: jest.fn(),
+  where: jest.fn(),
+  addDoc: jest.fn(),
+  updateDoc: jest.fn(),
+  deleteDoc: jest.fn(),
+}));
+
 import { render, screen, waitFor } from '@testing-library/react';
 
 // Mock the inventory data service
@@ -84,8 +102,6 @@ describe('ItemDetail Component', () => {
   });
 
   it('should display item name after loading', async () => {
-    mockGetInventoryItemById.mockResolvedValue(mockItem);
-    
     render(<ItemDetail />);
     
     await waitFor(() => {
@@ -94,18 +110,16 @@ describe('ItemDetail Component', () => {
   });
 
   it('should display asset number', async () => {
-    mockGetInventoryItemById.mockResolvedValue(mockItem);
-    
     render(<ItemDetail />);
     
     await waitFor(() => {
-      expect(screen.getByText('AST-001')).toBeInTheDocument();
+      // Asset number appears multiple times, so use getAllByText
+      const elements = screen.getAllByText('AST-001');
+      expect(elements.length).toBeGreaterThan(0);
     });
   });
 
   it('should display item description', async () => {
-    mockGetInventoryItemById.mockResolvedValue(mockItem);
-    
     render(<ItemDetail />);
     
     await waitFor(() => {
@@ -114,8 +128,6 @@ describe('ItemDetail Component', () => {
   });
 
   it('should display designated owner', async () => {
-    mockGetInventoryItemById.mockResolvedValue(mockItem);
-    
     render(<ItemDetail />);
     
     await waitFor(() => {
@@ -124,18 +136,16 @@ describe('ItemDetail Component', () => {
   });
 
   it('should display category', async () => {
-    mockGetInventoryItemById.mockResolvedValue(mockItem);
-    
     render(<ItemDetail />);
     
     await waitFor(() => {
-      expect(screen.getByText('Electronics')).toBeInTheDocument();
+      // Category appears multiple times, so use getAllByText
+      const elements = screen.getAllByText('Electronics');
+      expect(elements.length).toBeGreaterThan(0);
     });
   });
 
   it('should display status', async () => {
-    mockGetInventoryItemById.mockResolvedValue(mockItem);
-    
     render(<ItemDetail />);
     
     await waitFor(() => {
@@ -144,8 +154,6 @@ describe('ItemDetail Component', () => {
   });
 
   it('should display status badge with correct color', async () => {
-    mockGetInventoryItemById.mockResolvedValue(mockItem);
-    
     render(<ItemDetail />);
     
     await waitFor(() => {
@@ -155,8 +163,6 @@ describe('ItemDetail Component', () => {
   });
 
   it('should display category badge with correct color', async () => {
-    mockGetInventoryItemById.mockResolvedValue(mockItem);
-    
     render(<ItemDetail />);
     
     await waitFor(() => {
@@ -166,8 +172,6 @@ describe('ItemDetail Component', () => {
   });
 
   it('should display last updated date', async () => {
-    mockGetInventoryItemById.mockResolvedValue(mockItem);
-    
     render(<ItemDetail />);
     
     await waitFor(() => {
@@ -176,8 +180,6 @@ describe('ItemDetail Component', () => {
   });
 
   it('should display QR code representation', async () => {
-    mockGetInventoryItemById.mockResolvedValue(mockItem);
-    
     render(<ItemDetail />);
     
     await waitFor(() => {
@@ -186,8 +188,6 @@ describe('ItemDetail Component', () => {
   });
 
   it('should display asset information section', async () => {
-    mockGetInventoryItemById.mockResolvedValue(mockItem);
-    
     render(<ItemDetail />);
     
     await waitFor(() => {
@@ -213,7 +213,9 @@ describe('ItemDetail Component', () => {
     render(<ItemDetail />);
     
     await waitFor(() => {
-      expect(screen.getByText('Fixed')).toBeInTheDocument();
+      // Fixed appears multiple times, so use getAllByText
+      const elements = screen.getAllByText('Fixed');
+      expect(elements.length).toBeGreaterThan(0);
     });
   });
 
@@ -235,13 +237,13 @@ describe('ItemDetail Component', () => {
     render(<ItemDetail />);
     
     await waitFor(() => {
-      expect(screen.getByText('BAD')).toBeInTheDocument();
+      // BAD appears multiple times, so use getAllByText
+      const elements = screen.getAllByText('BAD');
+      expect(elements.length).toBeGreaterThan(0);
     });
   });
 
   it('should display item image', async () => {
-    mockGetInventoryItemById.mockResolvedValue(mockItem);
-    
     render(<ItemDetail />);
     
     await waitFor(() => {
@@ -252,8 +254,6 @@ describe('ItemDetail Component', () => {
   });
 
   it('should handle image load error gracefully', async () => {
-    mockGetInventoryItemById.mockResolvedValue(mockItem);
-    
     render(<ItemDetail />);
     
     await waitFor(() => {
@@ -263,8 +263,6 @@ describe('ItemDetail Component', () => {
   });
 
   it('should display all asset information fields', async () => {
-    mockGetInventoryItemById.mockResolvedValue(mockItem);
-    
     render(<ItemDetail />);
     
     await waitFor(() => {

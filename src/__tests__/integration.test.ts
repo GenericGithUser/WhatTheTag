@@ -1,4 +1,4 @@
-// Mock Firebase modules BEFORE importing anything else
+// Mock Firebase modules BEFORE any other imports
 jest.mock('firebase/app', () => ({
   initializeApp: jest.fn(() => ({})),
 }));
@@ -16,8 +16,19 @@ jest.mock('firebase/firestore', () => ({
   deleteDoc: jest.fn(),
 }));
 
+// Mock the firebase config to avoid ESM issues
+jest.mock('../firebase/config', () => ({
+  getInventoryItems: jest.fn(),
+  getInventoryItemById: jest.fn(),
+  getInventoryItemByAssetNumber: jest.fn(),
+  addInventoryItem: jest.fn(),
+  updateInventoryItem: jest.fn(),
+  deleteInventoryItem: jest.fn(),
+  getItemsByCategory: jest.fn(),
+  getItemsByStatus: jest.fn(),
+}));
+
 import { getInventoryItems, getInventoryItemById, getInventoryItemByAssetNumber } from '../data/inventory';
-import { InventoryItem } from '../types';
 
 describe('Integration Tests', () => {
   describe('Complete User Flow', () => {
