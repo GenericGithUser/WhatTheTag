@@ -144,6 +144,37 @@ If Firebase is not configured, the app automatically falls back to demo data wit
 - **Emphasis**: Orange (#d65d0e)
 - **Constants/Fixed**: Aqua (#689d6a)
 
+## Testing
+
+The app includes a comprehensive test suite covering types, data services, Firebase operations, components, Firestore rules, and integration flows.
+
+### Run Tests
+
+```bash
+# Run all tests
+npm test
+
+# Run tests in watch mode
+npm run test:watch
+
+# Run tests with coverage report
+npm run test:coverage
+
+# Run tests in CI mode
+npm run test:ci
+```
+
+### Test Categories
+
+- **Type Tests** - TypeScript type definitions validation
+- **Data Service Tests** - Inventory data service functions
+- **Firebase Tests** - Firestore operations and CRUD
+- **Component Tests** - Dashboard, Scanner, ItemDetail components
+- **Firestore Rules Tests** - Security rules validation
+- **Integration Tests** - End-to-end user flows
+
+See [TESTING.md](./TESTING.md) for detailed test documentation.
+
 ## License
 
 MIT
