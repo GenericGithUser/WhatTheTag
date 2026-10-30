@@ -159,6 +159,21 @@ ion-card {
   border-radius: 12px !important;
   --background: #ebdbb2;
   box-shadow: 0 1px 3px rgba(40, 40, 40, 0.08);
+  margin: 0;
+}
+
+ion-card-header {
+  padding: 16px 16px 8px 16px !important;
+}
+
+ion-card-content {
+  padding: 16px !important;
+}
+
+ion-card-title {
+  font-size: 16px;
+  font-weight: 600;
+  margin: 0;
 }
 
 ion-segment {
@@ -195,12 +210,38 @@ ion-badge {
   border-radius: 6px;
   font-weight: 600;
   letter-spacing: 0.5px;
+  padding: 4px 8px;
+  white-space: nowrap;
+  display: inline-flex;
+  align-items: center;
+  height: auto;
+  min-height: 24px;
+}
+
+ion-chip {
+  --background: #d5c4a1;
+  --color: #3c3836;
+  margin: 0;
+  height: auto;
+  min-height: 28px;
+}
+
+ion-chip ion-label {
+  margin: 0 12px;
+  white-space: nowrap;
 }
 
 ion-toolbar {
   --background: #ebdbb2;
   --color: #282828;
   --border-color: #d5c4a1;
+  --padding-start: 16px;
+  --padding-end: 16px;
+}
+
+ion-title {
+  padding-left: 0 !important;
+  padding-inline-start: 0 !important;
 }
 
 ion-header::after {
@@ -217,6 +258,18 @@ ion-item {
   --color: #282828;
   --border-color: #d5c4a1;
   --inner-border-color: #d5c4a1;
+  --padding-start: 0;
+  --inner-padding-start: 0;
+}
+
+ion-item ion-icon[slot="start"] {
+  margin-right: 12px !important;
+  font-size: 20px;
+  min-width: 20px;
+}
+
+ion-item ion-label {
+  margin-left: 0 !important;
 }
 
 ion-chip {

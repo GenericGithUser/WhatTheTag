@@ -279,11 +279,22 @@ const Scanner: React.FC = () => {
                 <p className="text-sm mt-1" style={{ color: '#665c54' }}>
                   Asset: {scannedItem.assetNumber}
                 </p>
-                <div className="flex gap-2 justify-center mt-2">
-                  <IonBadge color={getStatusColor(scannedItem.status)}>
+                <div className="flex gap-2 justify-center mt-2 flex-wrap">
+                  <IonBadge 
+                    color={getStatusColor(scannedItem.status)}
+                    style={{ whiteSpace: 'nowrap', padding: '4px 8px', height: 'auto' }}
+                  >
                     {scannedItem.status.toUpperCase()}
                   </IonBadge>
-                  <IonBadge style={{ background: getCategoryHexColor(scannedItem.category), color: '#fbf1c7' } as any}>
+                  <IonBadge 
+                    style={{ 
+                      background: getCategoryHexColor(scannedItem.category), 
+                      color: '#fbf1c7',
+                      whiteSpace: 'nowrap',
+                      padding: '4px 8px',
+                      height: 'auto'
+                    } as any}
+                  >
                     {scannedItem.category}
                   </IonBadge>
                 </div>
