@@ -5,7 +5,11 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage",
+    "test:ci": "jest --ci --coverage"
   },
   "dependencies": {
     "@dnd-kit/core": "^6.1.0",
@@ -14,17 +18,25 @@
     "@ionic/react": "^9.0.9",
     "@ionic/react-router": "^9.0.9",
     "@supabase/supabase-js": "^2.98.0",
+    "@testing-library/jest-dom": "^7.0.1",
+    "@testing-library/react": "^16.3.3",
+    "@testing-library/user-event": "^14.6.8",
+    "@types/jest": "^30.0.0",
     "canvas-confetti": "^1.9.3",
     "date-fns": "^2.30.0",
     "firebase": "^13.1.0",
     "framer-motion": "^11.16.1",
     "html5-qrcode": "^2.3.8",
+    "identity-obj-proxy": "^3.0.0",
     "ionicons": "^8.1.0",
+    "jest": "^30.5.2",
+    "jest-environment-jsdom": "^30.5.2",
     "lucide-react": "^0.294.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.30.6",
     "recharts": "^2.10.0",
+    "ts-jest": "^29.4.15",
     "uuid": "^9.0.1"
   },
   "devDependencies": {
