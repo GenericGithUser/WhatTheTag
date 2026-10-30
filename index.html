@@ -5,12 +5,23 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
     <meta name="theme-color" content="#ebdbb2" />
     <meta name="description" content="WhatTheTag - Scan and manage your inventory assets with QR codes" />
+    
+    <!-- PWA Meta Tags -->
     <meta name="mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-    <title>WhatTheTag</title>
+    <meta name="apple-mobile-web-app-title" content="WhatTheTag" />
+    <meta name="application-name" content="WhatTheTag" />
+    
+    <!-- PWA Manifest -->
     <link rel="manifest" href="/manifest.json" />
+    
+    <!-- Icons -->
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="apple-touch-icon" href="/icons/icon-192x192.png" />
+    
+    <title>WhatTheTag</title>
+    
     <style>
       html, body {
         margin: 0;
@@ -30,5 +41,21 @@
   <body>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
+    
+    <!-- Service Worker Registration (for PWABuilder detection) -->
+    <script>
+      // Register service worker for PWA support
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', function() {
+          navigator.serviceWorker.register('/sw.js', {
+            scope: '/'
+          }).then(function(registration) {
+            console.log('✅ Service Worker registered successfully:', registration.scope);
+          }).catch(function(error) {
+            console.log('❌ Service Worker registration failed:', error);
+          });
+        });
+      }
+    </script>
   </body>
 </html>
