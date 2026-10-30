@@ -1,3 +1,21 @@
+// Mock Firebase modules BEFORE any other imports
+jest.mock('firebase/app', () => ({
+  initializeApp: jest.fn(() => ({})),
+}));
+
+jest.mock('firebase/firestore', () => ({
+  getFirestore: jest.fn(() => ({})),
+  collection: jest.fn(),
+  doc: jest.fn(),
+  getDocs: jest.fn(),
+  getDoc: jest.fn(),
+  query: jest.fn(),
+  where: jest.fn(),
+  addDoc: jest.fn(),
+  updateDoc: jest.fn(),
+  deleteDoc: jest.fn(),
+}));
+
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import Scanner from '../pages/Scanner';
@@ -40,6 +58,7 @@ describe('Scanner Component', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
+    mockGetInventoryItemByAssetNumber.mockResolvedValue(mockItem);
   });
 
   it('should render the scanner title', () => {
@@ -103,8 +122,6 @@ describe('Scanner Component', () => {
   });
 
   it('should display scanned item details after successful scan', async () => {
-    mockGetInventoryItemByAssetNumber.mockResolvedValue(mockItem);
-    
     render(<Scanner />);
     
     // Click on quick demo button
@@ -147,8 +164,6 @@ describe('Scanner Component', () => {
   });
 
   it('should display View Details and Scan Again buttons after scan', async () => {
-    mockGetInventoryItemByAssetNumber.mockResolvedValue(mockItem);
-    
     render(<Scanner />);
     
     const demoButton = screen.getByText('AST-001');
@@ -161,8 +176,6 @@ describe('Scanner Component', () => {
   });
 
   it('should display asset number in scanned item view', async () => {
-    mockGetInventoryItemByAssetNumber.mockResolvedValue(mockItem);
-    
     render(<Scanner />);
     
     const demoButton = screen.getByText('AST-001');
@@ -174,8 +187,6 @@ describe('Scanner Component', () => {
   });
 
   it('should display status badge in scanned item view', async () => {
-    mockGetInventoryItemByAssetNumber.mockResolvedValue(mockItem);
-    
     render(<Scanner />);
     
     const demoButton = screen.getByText('AST-001');
@@ -188,8 +199,6 @@ describe('Scanner Component', () => {
   });
 
   it('should display category badge in scanned item view', async () => {
-    mockGetInventoryItemByAssetNumber.mockResolvedValue(mockItem);
-    
     render(<Scanner />);
     
     const demoButton = screen.getByText('AST-001');
@@ -201,8 +210,6 @@ describe('Scanner Component', () => {
   });
 
   it('should handle manual search with Enter key', async () => {
-    mockGetInventoryItemByAssetNumber.mockResolvedValue(mockItem);
-    
     render(<Scanner />);
     
     const input = screen.getByTestId('ion-input');
@@ -214,8 +221,6 @@ describe('Scanner Component', () => {
   });
 
   it('should reset to scan view when Scan Again is clicked', async () => {
-    mockGetInventoryItemByAssetNumber.mockResolvedValue(mockItem);
-    
     render(<Scanner />);
     
     const demoButton = screen.getByText('AST-001');

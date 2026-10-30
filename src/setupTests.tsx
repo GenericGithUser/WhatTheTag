@@ -99,6 +99,26 @@ jest.mock('@ionic/react-router', () => {
   };
 });
 
+// Mock react-router-dom with proper Router context
+const mockNavigate = jest.fn();
+jest.mock('react-router-dom', () => {
+  const React = require('react');
+  const RouterContext = React.createContext({
+    navigate: jest.fn(),
+    location: { pathname: '/' },
+  });
+  
+  return {
+    useNavigate: () => mockNavigate,
+    useParams: jest.fn(() => ({})),
+    Routes: ({ children }: any) => React.createElement('div', null, children),
+    Route: ({ element }: any) => element,
+    Navigate: () => null,
+    BrowserRouter: ({ children }: any) => React.createElement('div', { 'data-testid': 'browser-router' }, children),
+    MemoryRouter: ({ children }: any) => React.createElement('div', { 'data-testid': 'memory-router' }, children),
+  };
+});
+
 // Mock ionicons
 jest.mock('ionicons/icons', () => ({
   scanOutline: 'scan-outline',
