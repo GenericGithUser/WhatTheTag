@@ -12,4 +12,25 @@ export default defineConfig({
       port: 3000,
     },
   },
+  optimizeDeps: {
+    include: [
+      '@ionic/react',
+      '@ionic/react-router',
+      'ionicons',
+    ],
+    esbuildOptions: {
+      target: 'es2020',
+    },
+  },
+  build: {
+    target: 'es2020',
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          'ionic': ['@ionic/react', '@ionic/react-router'],
+          'ionicons': ['ionicons'],
+        },
+      },
+    },
+  },
 });
