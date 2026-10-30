@@ -1,3 +1,21 @@
+// Mock Firebase modules BEFORE importing anything else
+jest.mock('firebase/app', () => ({
+  initializeApp: jest.fn(() => ({})),
+}));
+
+jest.mock('firebase/firestore', () => ({
+  getFirestore: jest.fn(() => ({})),
+  collection: jest.fn(),
+  doc: jest.fn(),
+  getDocs: jest.fn(),
+  getDoc: jest.fn(),
+  query: jest.fn(),
+  where: jest.fn(),
+  addDoc: jest.fn(),
+  updateDoc: jest.fn(),
+  deleteDoc: jest.fn(),
+}));
+
 import {
   getInventoryItems,
   getInventoryItemById,
@@ -9,13 +27,6 @@ import {
   getCategoryIcon,
 } from '../data/inventory';
 import { InventoryItem, Status, Category } from '../types';
-
-// Mock the firebase config module
-jest.mock('../firebase/config', () => ({
-  getInventoryItems: jest.fn(),
-  getInventoryItemById: jest.fn(),
-  getInventoryItemByAssetNumber: jest.fn(),
-}));
 
 describe('Inventory Data Service', () => {
   beforeEach(() => {

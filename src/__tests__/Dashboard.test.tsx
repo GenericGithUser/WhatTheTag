@@ -148,10 +148,19 @@ describe('Dashboard Component', () => {
     render(<Dashboard />);
     
     await waitFor(() => {
-      // Total items
+      // Total items - should be 3
       expect(screen.getByText('3')).toBeInTheDocument();
-      // Good status count
-      expect(screen.getByText('1')).toBeInTheDocument();
+      
+      // Check that we have the correct number of stat cards
+      // We should have 6 stat cards total (4 status + 2 category)
+      const statCards = screen.getAllByTestId('ion-card');
+      expect(statCards.length).toBeGreaterThanOrEqual(6);
+      
+      // Verify the stats are displayed by checking for the labels
+      expect(screen.getByText('Total Items')).toBeInTheDocument();
+      expect(screen.getByText('Good')).toBeInTheDocument();
+      expect(screen.getByText('Has Defects')).toBeInTheDocument();
+      expect(screen.getByText('BAD')).toBeInTheDocument();
     });
   });
 

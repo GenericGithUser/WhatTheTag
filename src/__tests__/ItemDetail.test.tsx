@@ -1,6 +1,4 @@
 import { render, screen, waitFor } from '@testing-library/react';
-import ItemDetail from '../pages/ItemDetail';
-import { useParams } from 'react-router-dom';
 
 // Mock the inventory data service
 jest.mock('../data/inventory', () => ({
@@ -45,8 +43,14 @@ jest.mock('../data/inventory', () => ({
   }),
 }));
 
-const mockUseParams = useParams as jest.MockedFunction<typeof useParams>;
+// Mock react-router-dom
+const mockUseParams = jest.fn();
+jest.mock('react-router-dom', () => ({
+  useParams: () => mockUseParams(),
+  useNavigate: () => jest.fn(),
+}));
 
+import ItemDetail from '../pages/ItemDetail';
 import { getInventoryItemById } from '../data/inventory';
 
 const mockGetInventoryItemById = getInventoryItemById as jest.MockedFunction<typeof getInventoryItemById>;
@@ -68,6 +72,7 @@ describe('ItemDetail Component', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     mockUseParams.mockReturnValue({ id: 'test-id-123' });
+    mockGetInventoryItemById.mockResolvedValue(mockItem);
   });
 
   it('should render loading spinner initially', () => {
