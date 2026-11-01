@@ -12,7 +12,6 @@ import {
   Toolbar,
   Typography,
   IconButton,
-  Button,
   Avatar,
   Tooltip,
 } from '@mui/material';
