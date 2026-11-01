@@ -28,3 +28,7 @@ firebase-debug.log
 npm-debug.log*
 .next/
 build/
+
+*.jks
+*.keystore
+*.key
