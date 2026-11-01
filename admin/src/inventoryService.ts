@@ -11,7 +11,6 @@ import {
   limit,
   where,
   setDoc,
-  Timestamp,
 } from 'firebase/firestore';
 import { db } from './firebase';
 import { InventoryItem, Category, Status, DeletedAssetNumber } from './types';
