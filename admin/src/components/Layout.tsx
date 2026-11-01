@@ -12,13 +12,17 @@ import {
   Toolbar,
   Typography,
   IconButton,
+  Button,
+  Avatar,
+  Tooltip,
 } from '@mui/material';
 import {
   Dashboard as DashboardIcon,
   Add as AddIcon,
   Delete as DeleteIcon,
-  Menu as MenuIcon,
+  Logout as LogoutIcon,
 } from '@mui/icons-material';
+import { useAuth } from '../AuthContext';
 
 const drawerWidth = 240;
 
@@ -29,12 +33,22 @@ interface LayoutProps {
 export default function Layout({ children }: LayoutProps) {
   const navigate = useNavigate();
   const location = useLocation();
+  const { user, logout } = useAuth();
 
   const menuItems = [
     { text: 'Dashboard', icon: <DashboardIcon />, path: '/' },
     { text: 'Add Asset', icon: <AddIcon />, path: '/add' },
     { text: 'Deleted Assets', icon: <DeleteIcon />, path: '/deleted' },
   ];
+
+  const handleLogout = async () => {
+    try {
+      await logout();
+      navigate('/login');
+    } catch (err) {
+      console.error('Logout failed:', err);
+    }
+  };
 
   return (
     <Box sx={{ display: 'flex' }}>
@@ -43,9 +57,27 @@ export default function Layout({ children }: LayoutProps) {
         sx={{ zIndex: (theme) => theme.zIndex.drawer + 1, bgcolor: 'background.paper' }}
       >
         <Toolbar>
-          <Typography variant="h6" noWrap component="div" sx={{ color: 'text.primary' }}>
+          <Typography variant="h6" noWrap component="div" sx={{ color: 'text.primary', flexGrow: 1 }}>
             WhatTheTag Admin
           </Typography>
+          
+          {user && (
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+              <Tooltip title={user.email || 'User'}>
+                <Avatar sx={{ bgcolor: 'primary.main', width: 32, height: 32 }}>
+                  {user.email?.charAt(0).toUpperCase()}
+                </Avatar>
+              </Tooltip>
+              <Typography variant="body2" color="text.secondary" sx={{ display: { xs: 'none', sm: 'block' } }}>
+                {user.email}
+              </Typography>
+              <Tooltip title="Logout">
+                <IconButton onClick={handleLogout} color="error">
+                  <LogoutIcon />
+                </IconButton>
+              </Tooltip>
+            </Box>
+          )}
         </Toolbar>
       </AppBar>
 
