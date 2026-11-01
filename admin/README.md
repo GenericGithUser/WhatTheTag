@@ -1,9 +1,10 @@
 # WhatTheTag Admin - Inventory Management System
 
-A separate admin interface for managing inventory assets in the WhatTheTag system. This is a full-featured CRUD application built with React, Material-UI, and Firebase Firestore.
+A separate admin interface for managing inventory assets in the WhatTheTag system. This is a full-featured CRUD application built with React, Material-UI, and Firebase Firestore with email/password authentication.
 
 ## 🎯 Features
 
+- ✅ **Authentication** - Email/password login with protected routes
 - ✅ **Dashboard** - View all inventory items with statistics
 - ✅ **Add Assets** - Create new inventory items with auto-generated asset numbers
 - ✅ **Edit Assets** - Modify existing asset details
@@ -52,13 +53,25 @@ VITE_FIREBASE_APP_ID=your-app-id
 
 **Note:** Use the same Firebase project as your main WhatTheTag app.
 
-### 3. Run Development Server
+### 3. Enable Authentication
+
+1. Go to [Firebase Console](https://console.firebase.google.com/)
+2. Select your project
+3. Navigate to **Authentication** → **Sign-in method**
+4. Enable **Email/Password** authentication
+5. Create admin users in **Authentication** → **Users** → **Add user**
+
+See [ADMIN_AUTH_SETUP.md](../ADMIN_AUTH_SETUP.md) for detailed instructions.
+
+### 4. Run Development Server
 
 ```bash
 npm run dev
 ```
 
 The admin site will be available at `http://localhost:3001`
+
+You'll be redirected to the login page. Enter your admin credentials to access the dashboard.
 
 ## 🚀 Usage
 

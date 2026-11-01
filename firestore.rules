@@ -18,7 +18,7 @@ service cloud.firestore {
       // Anyone can read inventory items (public access for scanning)
       allow read: if true;
       
-      // Only authenticated users can create items
+      // Only authenticated users can create items (admin site)
       allow create: if isAuthenticated() &&
                     // Validate required fields exist
                     request.resource.data.keys().hasAll(['assetNumber', 'itemName', 'itemDescription', 'category', 'status', 'designatedOwner', 'image']) &&
@@ -39,8 +39,8 @@ service cloud.firestore {
                     request.resource.data.image is string &&
                     request.resource.data.image.matches('^https?://.*');
       
-      // Only admins can update or delete items
-      allow update: if isAdmin() &&
+      // Only authenticated users can update items (admin site)
+      allow update: if isAuthenticated() &&
                     // If category is being changed, validate it
                     (request.resource.data.category == resource.data.category ||
                      request.resource.data.category in ['Fixed', 'Electronics']) &&
@@ -48,7 +48,18 @@ service cloud.firestore {
                     (request.resource.data.status == resource.data.status ||
                      request.resource.data.status in ['Good', 'Has Defects', 'BAD']);
       
-      allow delete: if isAdmin();
+      // Only authenticated users can delete items (admin site)
+      allow delete: if isAuthenticated();
+    }
+    
+    // Deleted assets collection - only authenticated users can access
+    match /deleted_assets/{documentId} {
+      allow read, write: if isAuthenticated();
+    }
+    
+    // Counters collection - only authenticated users can access
+    match /counters/{documentId} {
+      allow read, write: if isAuthenticated();
     }
     
     // Users collection (for role management)
